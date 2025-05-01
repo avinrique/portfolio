@@ -2199,14 +2199,14 @@ case 'contact':
     </div>`;
     break;
 
-            case 'resume':
-                output.className = 'avin-terminal-line avin-terminal-success';
-                output.innerHTML = `<div class="portfolio-section">
-                    <h3>Resume</h3>
-                    <p>Generating downloadable resume...</p>
-                    <p><a href="#" onclick="alert('Resume download would start here in a real implementation')">Click here to download PDF version</a></p>
-                </div>`;
-                break;
+    case 'resume':
+    output.className = 'avin-terminal-line avin-terminal-success';
+    output.innerHTML = `<div class="portfolio-section">
+        <h3>Resume</h3>
+        <p>Generating downloadable resume...</p>
+        <p><a href="Abhinav_Gupta_Resume.pdf" download="Abhinav_Gupta_Resume.pdf">Click here to download PDF version</a></p>
+    </div>`;
+    break;
             // Project Commands
             case 'projects':
     output.className = 'avin-terminal-line avin-terminal-info';
@@ -2763,128 +2763,72 @@ document.querySelectorAll('.social-link').forEach(link => {
             setTimeout(typeWriter, 1500);
         });
 
-        // Notification System
-    //     function showNotification(title, message) {
-    //     const notification = document.createElement('div');
-    //     notification.classList.add('notification');
 
-    //     notification.innerHTML = `
-    //         <div class="notification-title">
-    //             <h4>${title}</h4>
-    //             <i class="fas fa-times"></i>
-    //         </div>
-    //         <div class="notification-content">
-    //             ${message}
-    //         </div>
-    //     `;
-
-    //     document.body.appendChild(notification);
-
-    //     notification.querySelector('.fa-times').addEventListener('click', function () {
-    //         notification.style.opacity = '0';
-    //         setTimeout(function () {
-    //             notification.remove();
-    //         }, 500);
-    //     });
-
-    //     setTimeout(function () {
-    //         notification.style.opacity = '0';
-    //         setTimeout(function () {
-    //             notification.remove();
-    //         }, 500);
-    //     }, 5000);
-    // }
-
-    // // Show useful system notifications
-    // setTimeout(function () {
-    //     const notifications = [];
-
-    //     // 1. Greeting based on time
-    //     const hour = new Date().getHours();
-    //     const greeting = hour < 12 ? 'Good morning!' : hour < 18 ? 'Good afternoon!' : 'Good evening!';
-    //     notifications.push({ title: 'Greetings', message: `${greeting} Welcome back to AvinTerm.` });
-
-    //     // 2. Battery status
-    //     if (navigator.getBattery) {
-    //         navigator.getBattery().then(battery => {
-    //             const level = Math.round(battery.level * 100);
-    //             notifications.push({ title: 'Battery Status', message: `Battery level is at ${level}%.` });
-    //         });
-    //     }
-
-    //     // 3. Network status
-    //     notifications.push({ title: 'Network Info', message: `You are currently ${navigator.onLine ? 'online' : 'offline'}.` });
-
-    //     // 4. Weather info (from your customCommands.weather)
-    //     if (typeof customCommands !== 'undefined' && customCommands.weather) {
-    //         customCommands.weather().then(weather => {
-    //             notifications.push({
-    //                 title: 'Weather Update',
-    //                 message: weather.replace(/\n/g, '<br>')
-    //             });
-    //         });
-    //     }
-
-    //     // Show first one immediately
-    //     setTimeout(() => {
-    //         if (notifications.length > 0) {
-    //             showNotification(notifications[0].title, notifications[0].message);
-    //         }
-    //     }, 1000);
-
-    //     // Show rest every 15 seconds
-    //     let index = 1;
-    //     setInterval(() => {
-    //         if (notifications.length > 0) {
-    //             showNotification(notifications[index % notifications.length].title, notifications[index % notifications.length].message);
-    //             index++;
-    //         }
-    //     }, 15000);
-    // }, 8000);
-
-    //     // Smooth scrolling
-    //     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    //         anchor.addEventListener('click', function (e) {
-    //             e.preventDefault();
-                
-    //             document.querySelector(this.getAttribute('href')).scrollIntoView({
-    //                 behavior: 'smooth'
-    //             });
-    //         });
-    //     });
     </script>
+
+    
     <script>
-        function showNotification(title, message) {
-            const notification = document.createElement('div');
-            notification.classList.add('notification');
+        
+        // function showNotification(title, message) {
+        //     const notification = document.createElement('div');
+        //     notification.classList.add('notification');
     
-            notification.innerHTML = `
-                <div class="notification-title">
-                    <h4>${title}</h4>
-                    <i class="fas fa-times"></i>
-                </div>
-                <div class="notification-content">
-                    ${message}
-                </div>
-            `;
+        //     notification.innerHTML = `
+        //         <div class="notification-title">
+        //             <h4>${title}</h4>
+        //             <i class="fas fa-times"></i>
+        //         </div>
+        //         <div class="notification-content">
+        //             ${message}
+        //         </div>
+        //     `;
     
-            document.body.appendChild(notification);
+        //     document.body.appendChild(notification);
     
-            notification.querySelector('.fa-times').addEventListener('click', function () {
-                notification.style.opacity = '0';
-                setTimeout(function () {
-                    notification.remove();
-                }, 500);
-            });
+        //     notification.querySelector('.fa-times').addEventListener('click', function () {
+        //         notification.style.opacity = '0';
+        //         setTimeout(function () {
+        //             notification.remove();
+        //         }, 500);
+        //     });
     
-            setTimeout(function () {
-                notification.style.opacity = '0';
-                setTimeout(function () {
-                    notification.remove();
-                }, 500);
-            }, 5000);
-        }
-    
+        //     setTimeout(function () {
+        //         notification.style.opacity = '0';
+        //         setTimeout(function () {
+        //             notification.remove();
+        //         }, 500);
+        //     }, 5000);
+        // }
+        function showNotification(title, message, durationMs = 5000) {
+    const notification = document.createElement('div');
+    notification.classList.add('notification');
+    notification.innerHTML = `
+        <div class="notification-title">
+            <h4>${title}</h4>
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="notification-content">
+            ${message}
+        </div>
+    `;
+
+    document.body.appendChild(notification);
+
+    notification.querySelector('.fa-times').addEventListener('click', function () {
+        notification.style.opacity = '0';
+        setTimeout(function () {
+            notification.remove();
+        }, 500);
+    });
+
+    setTimeout(function () {
+        notification.style.opacity = '0';
+        setTimeout(function () {
+            notification.remove();
+        }, 500);
+    }, durationMs);
+}
+
         function shouldShowNotification(key, intervalMinutes) {
             const lastShown = localStorage.getItem(key);
             const now = Date.now();
@@ -2944,6 +2888,114 @@ document.querySelectorAll('.social-link').forEach(link => {
             });
         });
     </script>
+    <script>
     
+    
+        // Function to fetch tech news
+        async function fetchTechNews() {
+            try {
+                // Using Hacker News API (completely free and public)
+                const topStoriesResponse = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json');
+                const topStoryIds = await topStoriesResponse.json();
+                
+                // Get the top 3 stories
+                const storyPromises = topStoryIds.slice(0, 3).map(id => 
+                    fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
+                        .then(response => response.json())
+                );
+                
+                const stories = await Promise.all(storyPromises);
+                return stories;
+            } catch (error) {
+                console.error('Error fetching tech news:', error);
+                return [];
+            }
+        }
+    
+        // Function to display tech news notification
+        function showTechNewsNotification() {
+    fetchTechNews().then(news => {
+        if (news && news.length > 0) {
+            let newsContent = '';
+            
+            news.forEach(item => {
+                newsContent += `
+                    <div class="news-item">
+                        <div class="news-title">
+                            <a href="${item.url || `https://news.ycombinator.com/item?id=${item.id}`}" target="_blank">
+                                ${item.title}
+                            </a>
+                        </div>
+                        <div class="news-source">
+                            ${item.score} points • ${item.by} • ${new Date(item.time * 1000).toLocaleTimeString()}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            showNotification('Latest Tech News', newsContent, 20000); // 20 seconds
+        }
+    });
+}
+        // Add tech news notification to your existing setTimeout
+        setTimeout(function() {
+            // Add this with your other notification checks
+            if (shouldShowNotification('techNewsLastShown', 1)) { // Show every 30 minutes
+                showTechNewsNotification();
+            }
+        }, 10000); // Slight delay after your other notifications
+    
+        // Add a function to manually refresh tech news
+        window.refreshTechNews = function() {
+            showTechNewsNotification();
+        };
+    
+        // Alternative news source using RSS2JSON (free tier with limitations)
+        async function fetchAlternativeTechNews() {
+            try {
+                const response = await fetch('https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Ffeeds.feedburner.com%2FTechCrunch&api_key=free');
+                const data = await response.json();
+                
+                if (data.status === 'ok') {
+                    return data.items.slice(0, 3);
+                }
+                return [];
+            } catch (error) {
+                console.error('Error fetching alternative tech news:', error);
+                return [];
+            }
+        }
+    
+        // Function to display alternative tech news
+        function showAlternativeTechNewsNotification() {
+            fetchAlternativeTechNews().then(news => {
+                if (news && news.length > 0) {
+                    let newsContent = '';
+                    
+                    news.forEach(item => {
+                        newsContent += `
+                            <div class="news-item">
+                                <div class="news-title">
+                                    <a href="${item.link}" target="_blank">
+                                        ${item.title}
+                                    </a>
+                                </div>
+                                <div class="news-source">
+                                    ${item.author} • ${new Date(item.pubDate).toLocaleString()}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    showNotification('Tech News Feed', newsContent);
+                }
+            });
+        }
+    
+        // Add this as another option
+        window.refreshAlternativeTechNews = function() {
+            showAlternativeTechNewsNotification();
+        };
+    </script>
 </body>
 </html>
