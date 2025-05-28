@@ -2119,8 +2119,12 @@ processCommand(cmd) {
                 about, skills, experience, contact, resume<br><br>
                 <strong>Project Commands:</strong><br>
                 projects, project [name], github, demo [name], code [name]<br><br>
-                <strong>Custom Commands:</strong><br>
-                hello, date, sum, weather [city], device`;
+                <strong>System Commands:</strong><br>
+                sysinfo, device, time, date<br><br>
+                <strong>Camera Commands:</strong><br>
+                takepic, takepic_rear, showpics, showpic [id], delpic [id], clearpics, camera_info<br><br>
+                <strong>Utility Commands:</strong><br>
+                hello, sum [numbers], weather [city]`;
                 break;
             case 'exit':
                 output.className = 'avin-terminal-line avin-terminal-success';
@@ -2385,6 +2389,7 @@ case 'contact':
         }
     }
     break;
+    
 
             default:
                 output.className = 'avin-terminal-line avin-terminal-error';
@@ -2546,7 +2551,7 @@ case 'contact':
 
         // Initialize terminal with default options
         document.addEventListener('DOMContentLoaded', () => {
-         
+            window.terminalImageStorage = window.terminalImageStorage || [];
             const customCommands = {
     hello: () => 'Hello, World!',
     date: () => new Date().toString(),
@@ -2556,6 +2561,274 @@ case 'contact':
             return 'Error: All arguments must be numbers';
         }
         return `Sum: ${numbers.reduce((a, b) => a + b, 0)}`;
+    },
+    takepic: async () => {
+        try {
+            // Request camera access
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    width: { ideal: 640 }, 
+                    height: { ideal: 480 },
+                    facingMode: 'user' // Use front camera by default
+                } 
+            });
+            
+            // Create video element to capture frame
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.autoplay = true;
+            video.muted = true;
+            
+            // Wait for video to be ready
+            await new Promise((resolve) => {
+                video.onloadedmetadata = () => {
+                    video.play();
+                    resolve();
+                };
+            });
+            
+            // Wait a moment for the camera to adjust
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Create canvas to capture the frame
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Draw video frame to canvas
+            ctx.drawImage(video, 0, 0);
+            
+            // Convert to data URL
+            const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+            
+            // Stop the camera stream
+            stream.getTracks().forEach(track => track.stop());
+            
+            // Store image with timestamp
+            const timestamp = new Date().toISOString();
+            const imageData = {
+                id: Date.now(),
+                dataURL: dataURL,
+                timestamp: timestamp,
+                filename: `pic_${Date.now()}.jpg`
+            };
+            
+            window.terminalImageStorage.push(imageData);
+            
+            return `📸 Picture captured successfully!
+Filename: ${imageData.filename}
+Timestamp: ${timestamp}
+Total images stored: ${window.terminalImageStorage.length}
+Use 'showpics' to view all images or 'showpic ${imageData.id}' to view this specific image.`;
+            
+        } catch (error) {
+            if (error.name === 'NotAllowedError') {
+                return '❌ Camera access denied. Please allow camera permissions and try again.';
+            } else if (error.name === 'NotFoundError') {
+                return '❌ No camera found on this device.';
+            } else if (error.name === 'NotSupportedError') {
+                return '❌ Camera not supported in this browser.';
+            } else {
+                return `❌ Error taking picture: ${error.message}`;
+            }
+        }
+    },
+    takepic_rear: async () => {
+        try {
+            // Request rear camera access
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    width: { ideal: 640 }, 
+                    height: { ideal: 480 },
+                    facingMode: 'environment' // Use rear camera
+                } 
+            });
+            
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.autoplay = true;
+            video.muted = true;
+            
+            await new Promise((resolve) => {
+                video.onloadedmetadata = () => {
+                    video.play();
+                    resolve();
+                };
+            });
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            ctx.drawImage(video, 0, 0);
+            const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+            
+            stream.getTracks().forEach(track => track.stop());
+            
+            const timestamp = new Date().toISOString();
+            const imageData = {
+                id: Date.now(),
+                dataURL: dataURL,
+                timestamp: timestamp,
+                filename: `pic_rear_${Date.now()}.jpg`
+            };
+            
+            window.terminalImageStorage.push(imageData);
+            
+            return `📸 Rear camera picture captured successfully!
+Filename: ${imageData.filename}
+Timestamp: ${timestamp}
+Total images stored: ${window.terminalImageStorage.length}`;
+            
+        } catch (error) {
+            return `❌ Error taking rear camera picture: ${error.message}`;
+        }
+    },
+    showpics: () => {
+        if (!window.terminalImageStorage || window.terminalImageStorage.length === 0) {
+            return '📁 No images stored. Use "takepic" to capture your first image!';
+        }
+        
+        let output = `<div class="portfolio-section">
+<h3>📸 Stored Images (${window.terminalImageStorage.length})</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">`;
+        
+        window.terminalImageStorage.forEach((image, index) => {
+            output += `
+<div style="border: 1px solid #00e8df; border-radius: 8px; padding: 10px; background: rgba(0, 232, 223, 0.1);">
+    <div style="text-align: center; margin-bottom: 8px;">
+        <img src="${image.dataURL}" alt="${image.filename}" 
+             style="width: 100%; max-width: 180px; height: auto; border-radius: 4px; cursor: pointer;"
+             onclick="window.open('${image.dataURL}', '_blank')">
+    </div>
+    <div style="font-size: 11px; color: #a0a0a0;">
+        <div><strong>ID:</strong> ${image.id}</div>
+        <div><strong>File:</strong> ${image.filename}</div>
+        <div><strong>Time:</strong> ${new Date(image.timestamp).toLocaleString()}</div>
+    </div>
+    <div style="margin-top: 8px; text-align: center;">
+        <button onclick="navigator.clipboard.writeText('${image.dataURL}')" 
+                style="background: rgba(0, 232, 223, 0.2); border: 1px solid #00e8df; color: #00e8df; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px;">
+            Copy URL
+        </button>
+        <button onclick="window.terminalImageStorage = window.terminalImageStorage.filter(img => img.id !== ${image.id}); window.terminal.appendOutput('🗑️ Image ${image.id} deleted', 'avin-terminal-success');" 
+                style="background: rgba(255, 95, 86, 0.2); border: 1px solid #ff5f56; color: #ff5f56; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; margin-left: 4px;">
+            Delete
+        </button>
+    </div>
+</div>`;
+        });
+        
+        output += `</div>
+<div style="margin-top: 15px; font-size: 12px; color: #a0a0a0;">
+💡 <strong>Tips:</strong><br>
+• Click on any image to view full size<br>
+• Use "showpic [id]" to view a specific image<br>
+• Use "delpic [id]" to delete a specific image<br>
+• Use "clearpics" to delete all images<br>
+• Images are stored in memory and will be lost when page refreshes
+</div>
+</div>`;
+        
+        return output;
+    },
+    showpic: (args) => {
+        if (args.length === 0) {
+            return '❌ Usage: showpic [image_id]';
+        }
+        
+        const imageId = parseInt(args[0]);
+        const image = window.terminalImageStorage.find(img => img.id === imageId);
+        
+        if (!image) {
+            return `❌ Image with ID ${imageId} not found. Use "showpics" to see all available images.`;
+        }
+        
+        return `<div class="portfolio-section">
+<h3>📸 Image Details</h3>
+<div style="text-align: center; margin: 15px 0;">
+    <img src="${image.dataURL}" alt="${image.filename}" 
+         style="max-width: 100%; max-height: 400px; border-radius: 8px; border: 1px solid #00e8df;"
+         onclick="window.open('${image.dataURL}', '_blank')">
+</div>
+<div style="background: rgba(0, 232, 223, 0.1); padding: 10px; border-radius: 8px;">
+    <p><strong>ID:</strong> ${image.id}</p>
+    <p><strong>Filename:</strong> ${image.filename}</p>
+    <p><strong>Timestamp:</strong> ${new Date(image.timestamp).toLocaleString()}</p>
+    <p><strong>Size:</strong> ${(image.dataURL.length * 0.75 / 1024).toFixed(2)} KB (estimated)</p>
+</div>
+<div style="margin-top: 10px; text-align: center;">
+    <button onclick="navigator.clipboard.writeText('${image.dataURL}')" 
+            style="background: rgba(0, 232, 223, 0.2); border: 1px solid #00e8df; color: #00e8df; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin: 0 5px;">
+        📋 Copy Image URL
+    </button>
+    <button onclick="const a = document.createElement('a'); a.href = '${image.dataURL}'; a.download = '${image.filename}'; a.click();" 
+            style="background: rgba(0, 232, 223, 0.2); border: 1px solid #00e8df; color: #00e8df; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin: 0 5px;">
+        💾 Download
+    </button>
+</div>
+</div>`;
+    },
+    delpic: (args) => {
+        if (args.length === 0) {
+            return '❌ Usage: delpic [image_id]';
+        }
+        
+        const imageId = parseInt(args[0]);
+        const imageIndex = window.terminalImageStorage.findIndex(img => img.id === imageId);
+        
+        if (imageIndex === -1) {
+            return `❌ Image with ID ${imageId} not found.`;
+        }
+        
+        const deletedImage = window.terminalImageStorage.splice(imageIndex, 1)[0];
+        return `🗑️ Image deleted successfully!
+Filename: ${deletedImage.filename}
+Remaining images: ${window.terminalImageStorage.length}`;
+    },
+    clearpics: () => {
+        const count = window.terminalImageStorage.length;
+        window.terminalImageStorage = [];
+        return `🗑️ All images cleared! Deleted ${count} image(s).`;
+    },
+    camera_info: async () => {
+        try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+            
+            if (videoDevices.length === 0) {
+                return '❌ No camera devices found on this system.';
+            }
+            
+            let output = `<div class="portfolio-section">
+<h3>📹 Camera Information</h3>
+<p><strong>Available cameras:</strong> ${videoDevices.length}</p>
+<ul>`;
+            
+            videoDevices.forEach((device, index) => {
+                output += `<li><strong>Camera ${index + 1}:</strong> ${device.label || 'Unknown Camera'} (ID: ${device.deviceId.substring(0, 20)}...)</li>`;
+            });
+            
+            output += `</ul>
+<p><strong>Commands:</strong></p>
+<ul>
+    <li><code>takepic</code> - Take picture with front camera</li>
+    <li><code>takepic_rear</code> - Take picture with rear camera</li>
+    <li><code>showpics</code> - View all stored images</li>
+    <li><code>showpic [id]</code> - View specific image</li>
+    <li><code>delpic [id]</code> - Delete specific image</li>
+    <li><code>clearpics</code> - Delete all images</li>
+</ul>
+</div>`;
+            
+            return output;
+        } catch (error) {
+            return `❌ Error getting camera info: ${error.message}`;
+        }
     },
     weather: async (args) => {
         try {
@@ -2596,7 +2869,7 @@ Wind: ${wind} km/h`;
             return 'Weather service currently unavailable. Please try again later.';
         }
     },
-    device: () => {
+  device: () => {
         const width = window.innerWidth;
         const height = window.innerHeight;
         const orientation = width > height ? 'landscape' : 'portrait';
@@ -2607,6 +2880,181 @@ Wind: ${wind} km/h`;
 Orientation: ${orientation}
 Device type: ${isMobile ? 'Mobile' : 'Desktop'}
 User agent: ${userAgent}`;
+    },
+    sysinfo: () => {
+        // Get comprehensive system information
+        const nav = navigator;
+        const screen = window.screen;
+        const perf = performance;
+        
+        // Device Detection
+        const userAgent = nav.userAgent;
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+        const isTablet = /iPad|Android.*Tablet|Windows.*Touch/i.test(userAgent);
+        const isDesktop = !isMobile && !isTablet;
+        
+        // Browser Detection
+        const isChrome = /Chrome/i.test(userAgent) && /Google Inc/i.test(nav.vendor);
+        const isFirefox = /Firefox/i.test(userAgent);
+        const isSafari = /Safari/i.test(userAgent) && /Apple Computer/i.test(nav.vendor);
+        const isEdge = /Edg/i.test(userAgent);
+        
+        // Operating System Detection
+        let os = 'Unknown';
+        if (/Windows NT 10.0/i.test(userAgent)) os = 'Windows 10/11';
+        else if (/Windows NT 6.3/i.test(userAgent)) os = 'Windows 8.1';
+        else if (/Windows NT 6.2/i.test(userAgent)) os = 'Windows 8';
+        else if (/Windows NT 6.1/i.test(userAgent)) os = 'Windows 7';
+        else if (/Windows/i.test(userAgent)) os = 'Windows';
+        else if (/Mac OS X 10[._](\d+)/i.test(userAgent)) {
+            const version = userAgent.match(/Mac OS X 10[._](\d+)/i)[1];
+            os = `macOS 10.${version}`;
+        }
+        else if (/Mac/i.test(userAgent)) os = 'macOS';
+        else if (/X11/i.test(userAgent)) os = 'UNIX';
+        else if (/Linux/i.test(userAgent)) os = 'Linux';
+        else if (/Android/i.test(userAgent)) os = 'Android';
+        else if (/iPhone|iPad|iPod/i.test(userAgent)) os = 'iOS';
+        
+        // Screen Information
+        const screenInfo = {
+            resolution: `${screen.width}x${screen.height}`,
+            viewport: `${window.innerWidth}x${window.innerHeight}`,
+            colorDepth: screen.colorDepth,
+            pixelDepth: screen.pixelDepth,
+            orientation: window.innerWidth > window.innerHeight ? 'Landscape' : 'Portrait',
+            devicePixelRatio: window.devicePixelRatio || 1
+        };
+        
+        // Connection Information
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        let connectionInfo = 'Unknown';
+        if (connection) {
+            connectionInfo = `${connection.effectiveType || 'Unknown'} (${connection.downlink || 'Unknown'}Mbps)`;
+        }
+        
+        // Memory Information (if available)
+        let memoryInfo = 'Not available';
+        if (nav.deviceMemory) {
+            memoryInfo = `${nav.deviceMemory} GB`;
+        }
+        
+        // CPU Information (if available)
+        let cpuInfo = 'Not available';
+        if (nav.hardwareConcurrency) {
+            cpuInfo = `${nav.hardwareConcurrency} cores`;
+        }
+        
+        // Battery Information (if available)
+        let batteryInfo = 'Not available';
+        if (nav.getBattery) {
+            nav.getBattery().then(battery => {
+                batteryInfo = `${Math.round(battery.level * 100)}% (${battery.charging ? 'Charging' : 'Not charging'})`;
+            });
+        }
+        
+        // Language and Locale
+        const language = nav.language || nav.userLanguage;
+        const languages = nav.languages ? nav.languages.join(', ') : language;
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        
+        // Browser Features
+        const features = {
+            cookies: nav.cookieEnabled,
+            javaEnabled: nav.javaEnabled ? nav.javaEnabled() : false,
+            onLine: nav.onLine,
+            doNotTrack: nav.doNotTrack,
+            webGL: !!window.WebGLRenderingContext,
+            localStorage: typeof Storage !== 'undefined',
+            sessionStorage: typeof sessionStorage !== 'undefined',
+            indexedDB: !!window.indexedDB,
+            webWorkers: typeof Worker !== 'undefined',
+            serviceWorkers: 'serviceWorker' in nav,
+            geolocation: 'geolocation' in nav,
+            notifications: 'Notification' in window,
+            webRTC: !!(nav.getUserMedia || nav.webkitGetUserMedia || nav.mozGetUserMedia || nav.msGetUserMedia)
+        };
+        
+        // Performance Information
+        const now = Date.now();
+        const loadTime = perf.timing ? Math.round(perf.timing.loadEventEnd - perf.timing.navigationStart) : 'Unknown';
+        const uptime = Math.round((now - perf.timing.navigationStart) / 1000);
+        
+        // GPU Information (basic)
+        let gpuInfo = 'Not available';
+        try {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (gl) {
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                if (debugInfo) {
+                    gpuInfo = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                }
+            }
+        } catch (e) {
+            // GPU info not available
+        }
+        
+        return `<div class="portfolio-section">
+<h3>🖥️ System Information</h3>
+
+<strong>📱 Device Information:</strong>
+• Type: ${isMobile ? '📱 Mobile' : isTablet ? '📱 Tablet' : '🖥️ Desktop'}
+• Operating System: ${os}
+• User Agent: ${userAgent}
+
+<strong>🌐 Browser Information:</strong>
+• Browser: ${isChrome ? 'Google Chrome' : isFirefox ? 'Mozilla Firefox' : isSafari ? 'Safari' : isEdge ? 'Microsoft Edge' : 'Unknown'}
+• Version: ${nav.appVersion}
+• Platform: ${nav.platform}
+• Vendor: ${nav.vendor || 'Unknown'}
+
+<strong>📺 Display Information:</strong>
+• Screen Resolution: ${screenInfo.resolution}
+• Viewport Size: ${screenInfo.viewport}
+• Orientation: ${screenInfo.orientation}
+• Color Depth: ${screenInfo.colorDepth} bit
+• Pixel Depth: ${screenInfo.pixelDepth} bit
+• Device Pixel Ratio: ${screenInfo.devicePixelRatio}x
+
+<strong>⚡ Hardware Information:</strong>
+• CPU Cores: ${cpuInfo}
+• Device Memory: ${memoryInfo}
+• GPU: ${gpuInfo}
+• Battery: ${batteryInfo}
+
+<strong>🌍 Locale & Network:</strong>
+• Language: ${language}
+• Languages: ${languages}
+• Timezone: ${timezone}
+• Online Status: ${nav.onLine ? '🟢 Online' : '🔴 Offline'}
+• Connection: ${connectionInfo}
+
+<strong>🔧 Browser Features:</strong>
+• Cookies Enabled: ${features.cookies ? '✅' : '❌'}
+• Java Enabled: ${features.javaEnabled ? '✅' : '❌'}
+• Do Not Track: ${features.doNotTrack ? '✅' : '❌'}
+• WebGL Support: ${features.webGL ? '✅' : '❌'}
+• Local Storage: ${features.localStorage ? '✅' : '❌'}
+• Session Storage: ${features.sessionStorage ? '✅' : '❌'}
+• IndexedDB: ${features.indexedDB ? '✅' : '❌'}
+• Web Workers: ${features.webWorkers ? '✅' : '❌'}
+• Service Workers: ${features.serviceWorkers ? '✅' : '❌'}
+• Geolocation: ${features.geolocation ? '✅' : '❌'}
+• Notifications: ${features.notifications ? '✅' : '❌'}
+• WebRTC: ${features.webRTC ? '✅' : '❌'}
+
+<strong>⏱️ Performance:</strong>
+• Page Load Time: ${loadTime}ms
+• Session Uptime: ${uptime}s
+• Current Time: ${new Date().toLocaleString()}
+
+<strong>💾 Storage Information:</strong>
+• Local Storage: ${features.localStorage ? 'Available' : 'Not Available'}
+• Session Storage: ${features.sessionStorage ? 'Available' : 'Not Available'}
+• IndexedDB: ${features.indexedDB ? 'Available' : 'Not Available'}
+
+</div>`;
     },
     time: () => {
         const now = new Date();
@@ -2646,6 +3094,26 @@ document.querySelector('.contact-form form').addEventListener('submit', function
     
     // Clear form
     this.reset();
+});
+let lastScrollY = window.scrollY;
+let isNearTop = false;
+
+window.addEventListener('scroll', function() {
+    const currentScrollY = window.scrollY;
+    const scrollThreshold = 100; // Show terminal when within 100px of top
+    
+    // Check if we're near the top
+    if (currentScrollY <= scrollThreshold && !isNearTop) {
+        isNearTop = true;
+        if (!window.terminal.terminalVisible) {
+            window.terminal.resetPosition();
+            window.terminal.showTerminal();
+        }
+    } else if (currentScrollY > scrollThreshold) {
+        isNearTop = false;
+    }
+    
+    lastScrollY = currentScrollY;
 });
         // Loading Screen
         window.addEventListener('load', function() {
