@@ -1505,6 +1505,9 @@ case 'contact':
                 // Calculate realtime rotations based on current time
                 this.updateRealtimeRotations();
                 
+                // Update satellites
+                this.updateSatellitePositions();
+                
                 this.renderer.render(this.scene, this.camera);
             }
             
