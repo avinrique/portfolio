@@ -905,6 +905,7 @@ case 'contact':
                 this.renderer = null;
                 this.earth = null;
                 this.moon = null;
+                this.satellites = [];
                 this.moonOrbit = { angle: 0, radius: 200, speed: 0.015 };
                 this.animationId = null;
                 this.startTime = Date.now();
@@ -938,9 +939,11 @@ case 'contact':
                 
                 this.createEarth();
                 this.createMoon();
+                this.createSatellites();
                 this.addLights();
                 this.animate();
                 this.setupResize();
+                this.setupScrollListener();
             }
             
             createEarth() {
@@ -979,6 +982,88 @@ case 'contact':
                 this.updateMoonPosition();
                 
                 this.scene.add(this.moon);
+            }
+            
+            createSatellites() {
+                // Create 3 satellites with different orbits
+                const satelliteCount = 3;
+                
+                for (let i = 0; i < satelliteCount; i++) {
+                    const satellite = this.createSingleSatellite(i);
+                    this.satellites.push(satellite);
+                    this.scene.add(satellite.group);
+                }
+            }
+            
+            createSingleSatellite(index) {
+                // Create satellite group to hold all parts
+                const satelliteGroup = new THREE.Group();
+                
+                // Main satellite body (small box)
+                const bodyGeometry = new THREE.BoxGeometry(3, 2, 4);
+                const bodyMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x888888,
+                    emissive: 0x222222
+                });
+                const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+                satelliteGroup.add(body);
+                
+                // Solar panels (flat rectangles)
+                const panelGeometry = new THREE.PlaneGeometry(6, 2);
+                const panelMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x1a1a2e,
+                    emissive: 0x0f0f1f
+                });
+                
+                const leftPanel = new THREE.Mesh(panelGeometry, panelMaterial);
+                leftPanel.position.set(-4.5, 0, 0);
+                leftPanel.rotation.y = Math.PI / 2;
+                satelliteGroup.add(leftPanel);
+                
+                const rightPanel = new THREE.Mesh(panelGeometry, panelMaterial);
+                rightPanel.position.set(4.5, 0, 0);
+                rightPanel.rotation.y = Math.PI / 2;
+                satelliteGroup.add(rightPanel);
+                
+                // Antenna (small cylinder)
+                const antennaGeometry = new THREE.CylinderGeometry(0.1, 0.1, 3);
+                const antennaMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xffffff,
+                    emissive: 0x333333
+                });
+                const antenna = new THREE.Mesh(antennaGeometry, antennaMaterial);
+                antenna.position.set(0, 2, 0);
+                satelliteGroup.add(antenna);
+                
+                // Blinking light (small sphere)
+                const lightGeometry = new THREE.SphereGeometry(0.3, 8, 8);
+                const lightMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xff0000,
+                    emissive: 0xff0000,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const light = new THREE.Mesh(lightGeometry, lightMaterial);
+                light.position.set(0, 1, 2);
+                satelliteGroup.add(light);
+                
+                // Satellite orbital properties
+                const orbitalRadius = 130 + (index * 15); // Different orbital distances
+                const orbitalSpeed = 0.01 + (index * 0.003); // Different speeds
+                const orbitalInclination = (index * 30) * (Math.PI / 180); // Different orbital planes
+                
+                return {
+                    group: satelliteGroup,
+                    body: body,
+                    light: light,
+                    lightMaterial: lightMaterial,
+                    angle: Math.random() * Math.PI * 2, // Random starting position
+                    radius: orbitalRadius,
+                    speed: orbitalSpeed,
+                    inclination: orbitalInclination,
+                    blinkTimer: Math.random() * 1000, // Random blink timing
+                    originalEmissive: 0xff0000
+                };
             }
             
             createMoonTexture() {
@@ -1101,9 +1186,48 @@ case 'contact':
                     const y = Math.sin(this.moonOrbit.angle * 0.5) * 50; // More pronounced diagonal movement
                     
                     this.moon.position.set(x, y, z);
-                    
-                    console.log(`Moon position: x=${x.toFixed(1)}, y=${y.toFixed(1)}, z=${z.toFixed(1)}, angle=${(this.moonOrbit.angle * 180/Math.PI).toFixed(1)}°`);
                 }
+            }
+            
+            updateSatellitePositions() {
+                const time = Date.now();
+                
+                this.satellites.forEach((satellite, index) => {
+                    // Update orbital angle
+                    satellite.angle += satellite.speed;
+                    
+                    // Calculate 3D orbital position with inclination
+                    const x = Math.cos(satellite.angle) * satellite.radius;
+                    const baseY = Math.sin(satellite.angle) * satellite.radius * Math.sin(satellite.inclination);
+                    const z = Math.sin(satellite.angle) * satellite.radius * Math.cos(satellite.inclination);
+                    
+                    // Add slight vertical oscillation for more dynamic movement
+                    const y = baseY + Math.sin(satellite.angle * 2) * 10;
+                    
+                    satellite.group.position.set(x, y, z);
+                    
+                    // Rotate satellite body slowly for realism
+                    satellite.body.rotation.y += 0.002;
+                    satellite.body.rotation.x += 0.001;
+                    
+                    // Update blinking light
+                    satellite.blinkTimer += 16; // Roughly 60fps
+                    const blinkCycle = 2000; // 2 second cycle
+                    const blinkPhase = (satellite.blinkTimer % blinkCycle) / blinkCycle;
+                    
+                    if (blinkPhase < 0.1) { // Blink for 10% of cycle
+                        satellite.lightMaterial.emissive.setHex(0xff0000); // Bright red
+                        satellite.lightMaterial.opacity = 1.0;
+                    } else if (blinkPhase < 0.2) { // Fade for next 10%
+                        const fadeIntensity = (0.2 - blinkPhase) / 0.1;
+                        const fadeColor = Math.floor(0xff * fadeIntensity);
+                        satellite.lightMaterial.emissive.setHex((fadeColor << 16));
+                        satellite.lightMaterial.opacity = 0.8 + (0.2 * fadeIntensity);
+                    } else { // Off for remaining 80%
+                        satellite.lightMaterial.emissive.setHex(0x330000); // Very dim red
+                        satellite.lightMaterial.opacity = 0.3;
+                    }
+                });
             }
             
             createEarthTexture() {
@@ -1438,6 +1562,97 @@ case 'contact':
                         this.renderer.setSize(width, height);
                     }
                 });
+            }
+            
+            setupScrollListener() {
+                let ticking = false;
+                
+                const updateEarthPosition = () => {
+                    const scrollY = window.scrollY;
+                    const threshold = 150; // Start shrinking after 150px scroll
+                    const maxScroll = 300; // Complete transition by 300px
+                    
+                    if (scrollY > threshold) {
+                        this.container.classList.add('scrolled');
+                        
+                        // Calculate scroll progress for contrast adjustment
+                        const scrollProgress = Math.min((scrollY - threshold) / (maxScroll - threshold), 1);
+                        this.adjustContrastForScroll(scrollProgress);
+                    } else {
+                        this.container.classList.remove('scrolled');
+                        this.adjustContrastForScroll(0);
+                    }
+                    
+                    ticking = false;
+                };
+                
+                window.addEventListener('scroll', () => {
+                    if (!ticking) {
+                        requestAnimationFrame(updateEarthPosition);
+                        ticking = true;
+                    }
+                });
+            }
+            
+            adjustContrastForScroll(progress) {
+                if (this.renderer) {
+                    // Minimal brightness increase
+                    const brightness = 1 + (progress * 0.15); // Very subtle brightness increase
+                    
+                    if (progress > 0) {
+                        this.renderer.domElement.style.filter = `brightness(${brightness})`;
+                    } else {
+                        this.renderer.domElement.style.filter = 'none';
+                    }
+                }
+                
+                // Adjust Earth and Moon materials while preserving theme colors
+                if (this.earth && this.moon) {
+                    const earthMaterial = this.earth.material;
+                    const moonMaterial = this.moon.material;
+                    
+                    if (progress > 0) {
+                        // Moderate opacity increase for visibility
+                        earthMaterial.opacity = Math.min(0.6 + (progress * 0.25), 0.85);
+                        
+                        // Keep exact theme color, just adjust intensity
+                        // Original: #002a2a (dark cyan)
+                        // Theme color: #00e8df (bright cyan)
+                        const originalCyan = 0x002a2a;
+                        const themeCyan = 0x00e8df;
+                        
+                        // Interpolate between original and theme color based on progress
+                        const r1 = (originalCyan >> 16) & 0xff;
+                        const g1 = (originalCyan >> 8) & 0xff;
+                        const b1 = originalCyan & 0xff;
+                        
+                        const r2 = (themeCyan >> 16) & 0xff;
+                        const g2 = (themeCyan >> 8) & 0xff;
+                        const b2 = themeCyan & 0xff;
+                        
+                        const mixFactor = progress * 0.3; // Very subtle mixing
+                        const finalR = Math.floor(r1 + (r2 - r1) * mixFactor);
+                        const finalG = Math.floor(g1 + (g2 - g1) * mixFactor);
+                        const finalB = Math.floor(b1 + (b2 - b1) * mixFactor);
+                        
+                        const finalColor = (finalR << 16) | (finalG << 8) | finalB;
+                        earthMaterial.emissive.setHex(finalColor);
+                        
+                        moonMaterial.opacity = 1.0;
+                        // Very subtle moon brightness increase
+                        const brightGray = Math.floor(0x33 + (progress * 0x11)); // Smaller increase
+                        const moonColor = (brightGray << 16) | (brightGray << 8) | brightGray;
+                        moonMaterial.emissive.setHex(moonColor);
+                        
+                    } else {
+                        // Original values for large view
+                        earthMaterial.opacity = 0.6;
+                        earthMaterial.emissive.setHex(0x002a2a); // Original dim cyan
+                        
+                        moonMaterial.opacity = 1.0;
+                        moonMaterial.emissive.setHex(0x333333); // Original gray
+                    }
+                }
             }
             
             destroy() {
