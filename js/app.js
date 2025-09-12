@@ -19,7 +19,7 @@
                 // Add minimize state tracking
                 this.isMinimized = false;
                 this.virtualFileSystem = {
-    'README.md': 'Welcome to AvinTerm! This terminal showcases my portfolio and projects.\nType "help" to see available commands.',
+    'README.md': 'Welcome to AvinTerm! This terminal showcases my portfolio and projects.\n\nQuick Start:\n- Type "help" for basic commands\n- Type "commands" to see ALL available commands\n- Type "hints" for easter egg discovery tips\n- Type "explore" for command suggestions\n\n🎪 Hidden surprises await exploration!',
     
     'about.txt': 'Hi, I\'m Abhinav Gupta — a full-stack developer and automation enthusiast currently pursuing Information Science and Engineering at BMSIT, Bangalore. I specialize in AI, automation, microcontroller-based systems, cybersecurity, and large language models. I love building projects that integrate hardware and software in smart, useful ways.',
 
@@ -86,6 +86,11 @@ Welcome to my digital workspace.
 Explore my projects through this custom shell.
 Type "help" to begin.
 
+🔍 Discovery Tips:
+- Type "commands" to see ALL 60+ commands
+- Type "hints" for easter egg hunting tips
+- Try typing emojis like 🚀 ☕ 🦄 🌙
+
 Hint: Robotics, astronomy, and talking bots are my thing.`
 
 };
@@ -97,6 +102,8 @@ Hint: Robotics, astronomy, and talking bots are my thing.`
                 this.isExpanded = false;
                 this.commandHistory = [];
                 this.historyIndex = -1;
+                this.currentSuggestion = '';
+                this.availableCommands = [];
 
                 // Initialize
                 this.init();
@@ -108,6 +115,7 @@ Hint: Robotics, astronomy, and talking bots are my thing.`
                 this.bindEvents();
                 this.makeDraggable();
                 this.updatePrompt();
+                this.initializeCommands();
                 this.hideTerminal();
                 
                 if (this.config.showOnLoad) {
@@ -271,8 +279,12 @@ Hint: Robotics, astronomy, and talking bots are my thing.`
                             this.terminalInput.value = '';
                         }
                     } else if (e.key === 'Tab') {
-                        // Tab completion could be implemented here
+                        // Tab completion
                         e.preventDefault();
+                        this.handleTabCompletion();
+                    } else {
+                        // Clear current suggestion when user types
+                        this.clearSuggestion();
                     }
 
              
@@ -381,9 +393,68 @@ processCommand(cmd) {
     const output = document.createElement('div');
     output.className = 'avin-terminal-line';
     
+    // Command aliases mapping
+    const aliases = {
+        'll': 'ls',
+        'dir': 'ls', 
+        'cls': 'clear',
+        'whoami': 'about',
+        'pwd': 'echo /home/avinav',
+        'cd': 'echo "Welcome to Avinav\'s portfolio! Use \'ls\' to explore."',
+        'sudo': 'echo "Nice try! 😄 You don\'t need sudo powers here."',
+        'rm': 'echo "Don\'t worry, nothing can be deleted in this safe space! 😊"',
+        'mkdir': 'echo "Creating directories in cyberspace... Done! (Just kidding 😉)"',
+        'chmod': 'echo "Permissions already set to \'awesome\' mode! ✨"',
+        'ping': 'echo "Pong! 🏓 Terminal is responsive."',
+        'nano': 'echo "No text editor needed - just explore with commands! 📝"',
+        'vim': 'echo "Exiting vim... just kidding! Use \'help\' instead 😄"',
+        'emacs': 'echo "Real programmers use the terminal! Try \'help\' 🤓"',
+        'man': 'help',
+        'info': 'help',
+        'tree': 'ls',
+        'find': 'echo "Everything you need to find is right here! Try \'ls\' or \'help\'"',
+        'hack': 'hacker',
+        'thematrix': 'matrix',
+        '🚀': 'rocket',
+        '☕': 'coffee',
+        '🦄': 'unicorn',
+        '🍕': 'pizza',
+        '🌙': 'moon',
+        'luna': 'moon',
+        'lunar': 'moon',
+        'certifications': 'certs',
+        'certificates': 'certs',
+        'awards': 'achievements',
+        'wins': 'achievements',
+        'tips': 'hints',
+        'discover': 'explore',
+        'shortcuts': 'aliases',
+        'easter': 'hints',
+        'apocalypse': 'destroy',
+        'end': 'destroy',
+        'terminate': 'destroy'
+    };
+    
     // Get the first word as the command
-    const commandName = cmd.split(' ')[0].toLowerCase();
-    const args = cmd.split(' ').slice(1);
+    let commandName = cmd.split(' ')[0].toLowerCase();
+    let args = cmd.split(' ').slice(1);
+    
+    // Check for aliases first
+    if (aliases[commandName]) {
+        const aliasResult = aliases[commandName];
+        if (aliasResult.includes('echo ')) {
+            // Direct echo command
+            const echoText = aliasResult.replace('echo ', '');
+            cmd = `echo ${echoText}`;
+            commandName = 'echo';
+            args = [echoText];
+        } else {
+            // Redirect to another command
+            cmd = aliasResult;
+            commandName = aliasResult;
+            args = [];
+        }
+    }
     
     // Check for custom command first
     if (this.config.commands && this.config.commands[commandName]) {
@@ -875,8 +946,156 @@ case 'contact':
                 this.terminalOutput.innerHTML = '';
             }
 
+            initializeCommands() {
+                // Build list of available commands for tab completion
+                this.availableCommands = [
+                    // Core commands
+                    'help', 'clear', 'echo', 'cat', 'ls', 'exit', 'version',
+                    // Portfolio commands  
+                    'about', 'skills', 'experience', 'contact', 'resume',
+                    // Project commands
+                    'projects', 'project', 'github', 'demo', 'code',
+                    // Camera commands
+                    'takepic', 'takepic_rear', 'showpics', 'showpic', 'delpic', 'clearpics', 'camera_info',
+                    // System commands
+                    'sysinfo', 'device', 'time', 'date',
+                    // Utility commands
+                    'weather', 'sum', 'hello', 'news'
+                ];
+            }
+            
+            handleTabCompletion() {
+                const currentInput = this.terminalInput.value;
+                const words = currentInput.split(' ');
+                const currentWord = words[words.length - 1];
+                
+                if (words.length === 1) {
+                    // Complete command names
+                    const matches = this.availableCommands.filter(cmd => 
+                        cmd.startsWith(currentWord.toLowerCase())
+                    );
+                    
+                    if (matches.length === 1) {
+                        // Single match - complete it
+                        this.terminalInput.value = matches[0];
+                        this.showCompletionFeedback(matches[0]);
+                    } else if (matches.length > 1) {
+                        // Multiple matches - show suggestions
+                        this.showCommandSuggestions(matches, currentWord);
+                    }
+                } else {
+                    // Handle argument completion (files, project names, etc.)
+                    const command = words[0].toLowerCase();
+                    this.handleArgumentCompletion(command, currentWord, words);
+                }
+            }
+            
+            showCommandSuggestions(matches, partial) {
+                const output = document.createElement('div');
+                output.className = 'avin-terminal-line avin-terminal-suggestion';
+                
+                const commonPrefix = this.findCommonPrefix(matches);
+                if (commonPrefix.length > partial.length) {
+                    // Auto-complete to common prefix
+                    this.terminalInput.value = commonPrefix;
+                }
+                
+                output.innerHTML = `<span class="avin-terminal-info">Available commands:</span><br>${matches.join('  ')}`;
+                this.terminalOutput.appendChild(output);
+                this.scrollToBottom();
+                
+                // Re-show the prompt
+                this.showCurrentPrompt();
+            }
+            
+            handleArgumentCompletion(command, currentWord, words) {
+                let suggestions = [];
+                
+                switch(command) {
+                    case 'project':
+                    case 'demo':
+                    case 'code':
+                        suggestions = ['portfolio-website', 'ai-chatbot', 'data-analyzer', 'mobile-app'];
+                        break;
+                    case 'weather':
+                        suggestions = ['london', 'new-york', 'tokyo', 'paris', 'mumbai'];
+                        break;
+                    case 'cat':
+                        suggestions = ['readme.txt', 'about.md', 'skills.json', 'projects.yml'];
+                        break;
+                    case 'showpic':
+                    case 'delpic':
+                        suggestions = ['1', '2', '3', '4', '5'];
+                        break;
+                    case 'news':
+                        suggestions = ['tech', 'world', 'business', 'science', 'sports'];
+                        break;
+                }
+                
+                if (suggestions.length > 0) {
+                    const matches = suggestions.filter(item => 
+                        item.toLowerCase().startsWith(currentWord.toLowerCase())
+                    );
+                    
+                    if (matches.length === 1) {
+                        words[words.length - 1] = matches[0];
+                        this.terminalInput.value = words.join(' ');
+                        this.showCompletionFeedback(matches[0]);
+                    } else if (matches.length > 1) {
+                        this.showArgumentSuggestions(matches, currentWord);
+                    }
+                }
+            }
+            
+            showArgumentSuggestions(matches, partial) {
+                const output = document.createElement('div');
+                output.className = 'avin-terminal-line avin-terminal-suggestion';
+                output.innerHTML = `<span class="avin-terminal-info">Available options:</span><br>${matches.join('  ')}`;
+                this.terminalOutput.appendChild(output);
+                this.scrollToBottom();
+                this.showCurrentPrompt();
+            }
+            
+            showCompletionFeedback(completed) {
+                // Brief visual feedback for successful completion
+                this.terminalInput.style.backgroundColor = 'rgba(0, 232, 223, 0.1)';
+                setTimeout(() => {
+                    this.terminalInput.style.backgroundColor = '';
+                }, 200);
+            }
+            
+            showCurrentPrompt() {
+                // Show current prompt after suggestions
+                const promptLine = document.createElement('div');
+                promptLine.className = 'avin-terminal-line';
+                promptLine.innerHTML = `<span class="avin-terminal-command">${this.config.username}@${this.config.hostname}:~$</span> <span class="avin-terminal-input-preview">${this.terminalInput.value}</span>`;
+                this.terminalOutput.appendChild(promptLine);
+            }
+            
+            findCommonPrefix(strings) {
+                if (strings.length === 0) return '';
+                if (strings.length === 1) return strings[0];
+                
+                let prefix = strings[0];
+                for (let i = 1; i < strings.length; i++) {
+                    while (strings[i].indexOf(prefix) !== 0) {
+                        prefix = prefix.substring(0, prefix.length - 1);
+                        if (prefix === '') return '';
+                    }
+                }
+                return prefix;
+            }
+            
+            clearSuggestion() {
+                this.currentSuggestion = '';
+            }
+
             registerCommand(name, callback) {
                 this.config.commands[name] = callback;
+                // Add to available commands list for tab completion
+                if (!this.availableCommands.includes(name)) {
+                    this.availableCommands.push(name);
+                }
             }
             
             // Handle cleanup
@@ -907,6 +1126,7 @@ case 'contact':
                 this.moon = null;
                 this.satellites = [];
                 this.moonOrbit = { angle: 0, radius: 200, speed: 0.015 };
+                this.moonSpeed = 0.02; // Normal speed for real-time mode
                 this.animationId = null;
                 this.startTime = Date.now();
                 
@@ -1532,20 +1752,31 @@ case 'contact':
                 }
                 
                 if (this.moon) {
-                    // Moon orbit: 29.5 days = 1 full orbit (lunar month)
-                    // Moon rotation: 29.5 days = 1 full rotation (tidal locking)
+                    // Check if we have a manual moon speed override (for easter egg)
+                    if (this.moonSpeed && this.moonSpeed !== 0.02) {
+                        // Manual animation mode - increment angle based on moonSpeed
+                        this.moonOrbit.angle += this.moonSpeed;
+                        if (this.moonOrbit.angle > Math.PI * 2) {
+                            this.moonOrbit.angle -= Math.PI * 2;
+                        }
+                    } else {
+                        // Real-time mode based on actual lunar cycle
+                        // Moon orbit: 29.5 days = 1 full orbit (lunar month)
+                        // Moon rotation: 29.5 days = 1 full rotation (tidal locking)
+                        
+                        // Get days since January 1, 1970 (epoch)
+                        const daysSinceEpoch = now / (1000 * 60 * 60 * 24);
+                        
+                        // Lunar cycle is approximately 29.530588853 days
+                        const lunarCycleDays = 29.530588853;
+                        
+                        // Calculate position in lunar cycle (0 to 1)
+                        const lunarCyclePosition = (daysSinceEpoch % lunarCycleDays) / lunarCycleDays;
+                        
+                        // Set moon orbital position
+                        this.moonOrbit.angle = lunarCyclePosition * Math.PI * 2;
+                    }
                     
-                    // Get days since January 1, 1970 (epoch)
-                    const daysSinceEpoch = now / (1000 * 60 * 60 * 24);
-                    
-                    // Lunar cycle is approximately 29.530588853 days
-                    const lunarCycleDays = 29.530588853;
-                    
-                    // Calculate position in lunar cycle (0 to 1)
-                    const lunarCyclePosition = (daysSinceEpoch % lunarCycleDays) / lunarCycleDays;
-                    
-                    // Set moon orbital position
-                    this.moonOrbit.angle = lunarCyclePosition * Math.PI * 2;
                     this.updateMoonPosition();
                     
                     // Moon rotation matches orbit (tidal locking)
@@ -1668,6 +1899,124 @@ case 'contact':
             }
         }
 
+        // Free News APIs - no authentication required
+        const HACKER_NEWS_API = 'https://hacker-news.firebaseio.com/v0';
+        const DEV_TO_API = 'https://dev.to/api/articles';
+        const REDDIT_API = 'https://www.reddit.com/r';
+        
+        // News helper functions with real API integration
+        async function fetchRealNews(category) {
+            try {
+                if (category === 'tech') {
+                    return await fetchHackerNews();
+                } else {
+                    return await fetchRSSNews(category);
+                }
+            } catch (error) {
+                console.error('News API Error:', error);
+                throw new Error('Failed to fetch news from API');
+            }
+        }
+
+        async function fetchHackerNews() {
+            // Get top stories from Hacker News
+            const topStoriesResponse = await fetch(`${HACKER_NEWS_API}/topstories.json`);
+            const storyIds = await topStoriesResponse.json();
+            
+            // Get first 5 stories
+            const stories = await Promise.all(
+                storyIds.slice(0, 5).map(async id => {
+                    const storyResponse = await fetch(`${HACKER_NEWS_API}/item/${id}.json`);
+                    return storyResponse.json();
+                })
+            );
+            
+            return stories
+                .filter(story => story && story.title && !story.deleted)
+                .map(story => ({
+                    title: story.title,
+                    source: 'Hacker News',
+                    time: formatPublishedTime(new Date(story.time * 1000).toISOString()),
+                    description: `Score: ${story.score || 0} points | Comments: ${story.descendants || 0}`,
+                    url: story.url || `https://news.ycombinator.com/item?id=${story.id}`
+                }));
+        }
+
+        async function fetchRSSNews(category) {
+            // Only use working APIs - no fake news
+            if (category === 'tech') {
+                return await fetchDevToNews();
+            } else {
+                throw new Error(`${category} news not available - only tech news supported currently`);
+            }
+        }
+
+        async function fetchDevToNews() {
+            try {
+                const response = await fetch(`${DEV_TO_API}?per_page=5&top=1`);
+                
+                if (!response.ok) {
+                    throw new Error(`Dev.to API Error: ${response.status}`);
+                }
+                
+                const articles = await response.json();
+                
+                return articles.map(article => ({
+                    title: article.title,
+                    source: 'Dev.to',
+                    time: formatPublishedTime(article.published_at),
+                    description: `${article.positive_reactions_count} reactions | ${article.comments_count} comments`,
+                    url: article.url
+                }));
+            } catch (error) {
+                console.warn('Dev.to API failed:', error);
+                throw error;
+            }
+        }
+
+        
+        function formatPublishedTime(publishedAt) {
+            const publishedDate = new Date(publishedAt);
+            const now = new Date();
+            const diffMs = now - publishedDate;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffMins = Math.floor(diffMs / (1000 * 60));
+            
+            if (diffHours < 1) {
+                return `${diffMins} minutes ago`;
+            } else if (diffHours < 24) {
+                return `${diffHours} hours ago`;
+            } else {
+                const diffDays = Math.floor(diffHours / 24);
+                return `${diffDays} days ago`;
+            }
+        }
+        
+        
+        function formatNewsOutput(newsData, category) {
+            const categoryEmojis = {
+                tech: '💻', world: '🌍', business: '💼',
+                science: '🔬', sports: '⚽', general: '📰'
+            };
+            
+            const emoji = categoryEmojis[category] || '📰';
+            const header = `<span class="avin-terminal-info">${emoji} ${category.toUpperCase()} NEWS</span>`;
+            const separator = '<span style="color: #666;">'.padEnd(60, '─') + '</span>';
+            
+            let output = header + '<br>' + separator + '<br><br>';
+            
+            newsData.forEach((article, index) => {
+                output += `<span class="avin-terminal-success">[${index + 1}]</span> `;
+                output += `<span style="color: #fff; font-weight: bold;">${article.title}</span><br>`;
+                output += `<span style="color: #888;">    📅 ${article.time} • 📄 ${article.source}</span><br><br>`;
+            });
+            
+            output += `<span style="color: #666;">${separator}</span><br>`;
+            output += `<span class="avin-terminal-info">💡 Usage: news [category] - Available: tech, world, business, science, sports</span>`;
+            
+            return output;
+        }
+
         // Initialize 3D Earth and Terminal
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize 3D Earth
@@ -1683,6 +2032,24 @@ case 'contact':
             return 'Error: All arguments must be numbers';
         }
         return `Sum: ${numbers.reduce((a, b) => a + b, 0)}`;
+    },
+    news: async (args) => {
+        const category = args[0] || 'general';
+        const loadingMsg = `<span class="avin-terminal-info">📰 Fetching ${category} news...</span>`;
+        
+        // Show loading message immediately
+        setTimeout(() => {
+            const output = document.querySelector('.avin-terminal-output .avin-terminal-line:last-child');
+            if (output) output.innerHTML = loadingMsg;
+        }, 100);
+        
+        try {
+            // Fetch real news from NewsAPI
+            const newsData = await fetchRealNews(category);
+            return formatNewsOutput(newsData, category);
+        } catch (error) {
+            return `<span class="avin-terminal-error">Error fetching news: ${error.message}</span>`;
+        }
     },
     takepic: async () => {
         try {
@@ -2181,13 +2548,713 @@ User agent: ${userAgent}`;
     time: () => {
         const now = new Date();
         return `Current time: ${now.toLocaleTimeString()}`;
-    }
+    },
+    
+    // Easter Egg Commands 🥚
+    matrix: () => {
+        setTimeout(() => {
+            const terminalContainer = document.querySelector('.avin-terminal-container');
+            terminalContainer.classList.add('matrix-effect');
+            setTimeout(() => {
+                terminalContainer.classList.remove('matrix-effect');
+            }, 5000);
+        }, 100);
+        return `<span class="avin-terminal-success">Welcome to the Matrix... 🔴💊</span>`;
+    },
+    
+    konami: () => {
+        return `<span class="avin-terminal-success">🎮 ↑↑↓↓←→←→BA - 30 Lives! (Classic cheat code activated)</span>`;
+    },
+    
+    hacker: () => {
+        setTimeout(() => {
+            const lines = [
+                'ACCESSING MAINFRAME...',
+                'BYPASSING FIREWALL...',
+                'DECRYPTING DATA...',
+                'HACK SUCCESSFUL! 😎'
+            ];
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < lines.length) {
+                    const output = document.createElement('div');
+                    output.className = 'avin-terminal-line';
+                    output.innerHTML = `<span style="color: #00ff00;">${lines[i]}</span>`;
+                    document.querySelector('.avin-terminal-output').appendChild(output);
+                    document.querySelector('.avin-terminal-content').scrollTop = 
+                        document.querySelector('.avin-terminal-content').scrollHeight;
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 800);
+        }, 100);
+        return `<span class="avin-terminal-info">Initiating hacker sequence... 💻</span>`;
+    },
+    
+    dance: () => {
+        const danceEmojis = ['💃', '🕺', '🎶', '✨', '🌟', '🎉'];
+        let danceText = '';
+        for (let i = 0; i < 20; i++) {
+            danceText += danceEmojis[Math.floor(Math.random() * danceEmojis.length)] + ' ';
+        }
+        setTimeout(() => {
+            document.body.style.animation = 'rainbow-bg 3s infinite';
+            setTimeout(() => {
+                document.body.style.animation = '';
+            }, 3000);
+        }, 100);
+        return `<span class="avin-terminal-success">🎵 ${danceText} 🎵</span>`;
+    },
+    
+    rocket: () => {
+        setTimeout(() => {
+            const rocket = document.createElement('div');
+            rocket.style.cssText = `
+                position: fixed;
+                bottom: -50px;
+                left: 50%;
+                font-size: 30px;
+                z-index: 10000;
+                transition: all 3s ease-out;
+                transform: translateX(-50%);
+            `;
+            rocket.innerHTML = '🚀';
+            document.body.appendChild(rocket);
+            
+            setTimeout(() => {
+                rocket.style.bottom = '110%';
+                rocket.style.transform = 'translateX(-50%) rotate(45deg)';
+            }, 100);
+            
+            setTimeout(() => {
+                document.body.removeChild(rocket);
+            }, 3100);
+        }, 100);
+        return `<span class="avin-terminal-success">🚀 Launching rocket to space! Watch the sky!</span>`;
+    },
+    
+    coffee: () => {
+        const coffeeArt = `
+        <pre style="color: #8B4513; font-family: monospace;">
+        (  )   (   )  )
+         ) (   )  (  (
+         ( )  (    ) )
+         _____________
+        <_____________> ___
+        |             |/ _ \\
+        |    COFFEE   | | |  ☕
+        |_____________|\\___/
+        </pre>`;
+        return `<span class="avin-terminal-info">Brewing the perfect cup... ☕</span>${coffeeArt}`;
+    },
+    
+    unicorn: () => {
+        return `<span class="avin-terminal-success">🦄✨🌈 A wild unicorn appears! 🌈✨🦄</span><br>
+                <span style="color: #ff69b4;">    /|   /|  </span><br>
+                <span style="color: #ff69b4;">   (  :v:  ) </span><br>
+                <span style="color: #ff69b4;">    |(_)|  </span><br>
+                <span style="color: #ff69b4;">     ^^^   </span>`;
+    },
+    
+    pizza: () => {
+        return `<span class="avin-terminal-success">🍕 Pizza delivery! That'll be $12.99 in cryptocurrency please 😄</span>`;
+    },
+    
+    fortune: () => {
+        const fortunes = [
+            "🔮 You will write amazing code today!",
+            "✨ A great opportunity awaits in your future!",
+            "🌟 Your debugging skills will save the day!",
+            "💫 A perfect solution will come to you in a dream!",
+            "🎯 You will find the bug on the first try!",
+            "🍀 Your next commit will be legendary!",
+            "⭐ Stack Overflow will have exactly what you need!",
+            "🎪 Your code will run perfectly in production!"
+        ];
+        return `<span class="avin-terminal-info">${fortunes[Math.floor(Math.random() * fortunes.length)]}</span>`;
+    },
+    
+    secret: () => {
+        return `<span class="avin-terminal-success">🤫 You found the secret command! Here's your prize: 🏆</span><br>
+                <span class="avin-terminal-info">🎁 Achievement Unlocked: "Explorer" - You like to discover hidden features!</span>`;
+    },
+    
+    moon: () => {
+        setTimeout(() => {
+            // Access the 3D Earth instance and trigger moon revolution
+            if (window.earth3D && window.earth3D.moon) {
+                // Speed up moon revolution to a nice, smooth pace
+                const originalMoonSpeed = window.earth3D.moonSpeed || 0.02;
+                window.earth3D.moonSpeed = 0.08; // Smooth, elegant revolution speed
+                
+                // Show notification using existing system
+                showNotification('Lunar System', '🌙 Moon revolution activated! Watch the elegant orbital dance around Earth.', 30000);
+                
+                // Reset moon speed after one complete revolution (about 78 seconds at 0.08 speed)
+                // But let's make it shorter for better UX - 30 seconds for partial revolution
+                setTimeout(() => {
+                    if (window.earth3D) {
+                        window.earth3D.moonSpeed = originalMoonSpeed;
+                    }
+                }, 30000);
+                
+            } else {
+                // Fallback message if 3D Earth isn't available
+                const fallbackMsg = document.createElement('div');
+                fallbackMsg.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-size: 48px;
+                    z-index: 10000;
+                    animation: moonOrbit 3s ease-in-out;
+                `;
+                fallbackMsg.innerHTML = '🌙🌍';
+                document.body.appendChild(fallbackMsg);
+                
+                setTimeout(() => {
+                    document.body.removeChild(fallbackMsg);
+                }, 3000);
+            }
+        }, 100);
+        return `<span class="avin-terminal-success">🌙 Initiating elegant lunar orbit! Watch the moon gracefully revolve around Earth 🌍✨</span>`;
+    },
+    
+    // Achievement and Certification Commands
+    certs: async () => {
+        try {
+            const response = await fetch('./docs/achievements.json');
+            const data = await response.json();
+            
+            if (!data.certifications || data.certifications.length === 0) {
+                return `<span class="avin-terminal-info">📜 No certifications found. Add your certificates to docs/achievements.json</span>`;
+            }
+            
+            let output = `<span class="avin-terminal-success">🎓 CERTIFICATIONS</span>\n`;
+            output += `<span style="color: #666;">${'─'.repeat(50)}</span>\n\n`;
+            
+            data.certifications.forEach((cert, index) => {
+                if (cert.title && cert.title.trim()) {
+                    output += `<span class="avin-terminal-success">[${index + 1}]</span> `;
+                    output += `<span style="color: #fff; font-weight: bold;">${cert.title}</span>\n`;
+                    output += `<span style="color: #888;">    🏢 ${cert.issuer} | 📅 ${cert.date}</span>\n`;
+                    if (cert.credentialId) {
+                        output += `<span style="color: #888;">    🆔 ${cert.credentialId}</span>\n`;
+                    }
+                    output += '\n';
+                }
+            });
+            
+            output += `<span style="color: #666;">${'─'.repeat(50)}</span>\n`;
+            output += `<span class="avin-terminal-info">💡 Use 'cert [number]' for details or 'viewcert [number]' to see certificate image</span>`;
+            
+            return output;
+        } catch (error) {
+            return `<span class="avin-terminal-error">Error loading certifications: ${error.message}</span>`;
+        }
+    },
+    
+    achievements: async () => {
+        try {
+            const response = await fetch('./docs/achievements.json');
+            const data = await response.json();
+            
+            if (!data.competitions || data.competitions.length === 0) {
+                return `<span class="avin-terminal-info">🏆 No achievements found. Add your competition wins to docs/achievements.json</span>`;
+            }
+            
+            let output = `<span class="avin-terminal-success">🏆 ACHIEVEMENTS & COMPETITIONS</span>\n`;
+            output += `<span style="color: #666;">${'─'.repeat(50)}</span>\n\n`;
+            
+            data.competitions.forEach((comp, index) => {
+                if (comp.title && comp.title.trim()) {
+                    output += `<span class="avin-terminal-success">[${index + 1}]</span> `;
+                    output += `<span style="color: #fff; font-weight: bold;">${comp.title}</span>\n`;
+                    output += `<span style="color: #888;">    🏢 ${comp.organizer} | 📅 ${comp.date}</span>\n`;
+                    if (comp.position) {
+                        output += `<span style="color: #888;">    🥇 Position: ${comp.position}</span>\n`;
+                    }
+                    if (comp.prize) {
+                        output += `<span style="color: #888;">    💰 Prize: ${comp.prize}</span>\n`;
+                    }
+                    output += '\n';
+                }
+            });
+            
+            return output;
+        } catch (error) {
+            return `<span class="avin-terminal-error">Error loading achievements: ${error.message}</span>`;
+        }
+    },
+    
+    courses: async () => {
+        try {
+            const response = await fetch('./docs/achievements.json');
+            const data = await response.json();
+            
+            if (!data.courses || data.courses.length === 0) {
+                return `<span class="avin-terminal-info">📚 No courses found. Add your completed courses to docs/achievements.json</span>`;
+            }
+            
+            let output = `<span class="avin-terminal-success">📚 COMPLETED COURSES</span>\n`;
+            output += `<span style="color: #666;">${'─'.repeat(50)}</span>\n\n`;
+            
+            data.courses.forEach((course, index) => {
+                if (course.title && course.title.trim()) {
+                    output += `<span class="avin-terminal-success">[${index + 1}]</span> `;
+                    output += `<span style="color: #fff; font-weight: bold;">${course.title}</span>\n`;
+                    output += `<span style="color: #888;">    🏢 ${course.provider} | 📅 ${course.completionDate}</span>\n`;
+                    if (course.grade) {
+                        output += `<span style="color: #888;">    📊 Grade: ${course.grade}</span>\n`;
+                    }
+                    if (course.duration) {
+                        output += `<span style="color: #888;">    ⏱️ Duration: ${course.duration}</span>\n`;
+                    }
+                    output += '\n';
+                }
+            });
+            
+            return output;
+        } catch (error) {
+            return `<span class="avin-terminal-error">Error loading courses: ${error.message}</span>`;
+        }
+    },
+    
+    cert: async (args) => {
+        if (!args[0]) {
+            return `<span class="avin-terminal-error">Usage: cert [number] - Show detailed certificate information</span>`;
+        }
+        
+        try {
+            const response = await fetch('./docs/achievements.json');
+            const data = await response.json();
+            const index = parseInt(args[0]) - 1;
+            
+            if (!data.certifications || !data.certifications[index]) {
+                return `<span class="avin-terminal-error">Certificate ${args[0]} not found</span>`;
+            }
+            
+            const cert = data.certifications[index];
+            if (!cert.title || !cert.title.trim()) {
+                return `<span class="avin-terminal-error">Certificate ${args[0]} is empty</span>`;
+            }
+            
+            let output = `<span class="avin-terminal-success">🎓 ${cert.title}</span>\n`;
+            output += `<span style="color: #666;">${'─'.repeat(50)}</span>\n\n`;
+            output += `<span style="color: #4caf50;">Issuer:</span> ${cert.issuer}\n`;
+            output += `<span style="color: #4caf50;">Date:</span> ${cert.date}\n`;
+            if (cert.credentialId) {
+                output += `<span style="color: #4caf50;">Credential ID:</span> ${cert.credentialId}\n`;
+            }
+            if (cert.description) {
+                output += `<span style="color: #4caf50;">Description:</span> ${cert.description}\n`;
+            }
+            if (cert.skills && cert.skills.length > 0) {
+                output += `<span style="color: #4caf50;">Skills:</span> ${cert.skills.join(', ')}\n`;
+            }
+            if (cert.verificationUrl) {
+                output += `<span style="color: #4caf50;">Verify:</span> <a href="${cert.verificationUrl}" target="_blank">${cert.verificationUrl}</a>\n`;
+            }
+            
+            return output;
+        } catch (error) {
+            return `<span class="avin-terminal-error">Error loading certificate: ${error.message}</span>`;
+        }
+    },
+    
+    viewcert: async (args) => {
+        if (!args[0]) {
+            return `<span class="avin-terminal-error">Usage: viewcert [number] - Display certificate image</span>`;
+        }
+        
+        try {
+            const response = await fetch('./docs/achievements.json');
+            const data = await response.json();
+            const index = parseInt(args[0]) - 1;
+            
+            if (!data.certifications || !data.certifications[index]) {
+                return `<span class="avin-terminal-error">Certificate ${args[0]} not found</span>`;
+            }
+            
+            const cert = data.certifications[index];
+            if (!cert.image) {
+                return `<span class="avin-terminal-error">No image available for certificate ${args[0]}</span>`;
+            }
+            
+            const imagePath = `./assets/images/certificates/${cert.image}`;
+            return `<div style="margin: 10px 0;">
+                        <span class="avin-terminal-success">📜 ${cert.title}</span><br>
+                        <img src="${imagePath}" alt="${cert.title}" style="max-width: 100%; height: auto; margin-top: 10px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                    </div>`;
+        } catch (error) {
+            return `<span class="avin-terminal-error">Error loading certificate image: ${error.message}</span>`;
+        }
+    },
+    
+    // Discovery and Help Commands
+    commands: () => {
+        let output = `<span class="avin-terminal-success">📋 ALL AVAILABLE COMMANDS</span>\n`;
+        output += `<span style="color: #666;">${'─'.repeat(60)}</span>\n\n`;
+        
+        output += `<span class="avin-terminal-info">🔧 CORE COMMANDS</span>\n`;
+        output += `help, clear, echo, cat, ls, exit, version, pwd, cd\n\n`;
+        
+        output += `<span class="avin-terminal-info">👤 PORTFOLIO COMMANDS</span>\n`;
+        output += `about, skills, experience, contact, resume\n\n`;
+        
+        output += `<span class="avin-terminal-info">💼 PROJECT COMMANDS</span>\n`;
+        output += `projects, project [name], github, demo [name], code [name]\n\n`;
+        
+        output += `<span class="avin-terminal-info">🎓 CERTIFICATION COMMANDS</span>\n`;
+        output += `certs, achievements, courses, cert [number], viewcert [number]\n\n`;
+        
+        output += `<span class="avin-terminal-info">📸 CAMERA COMMANDS</span>\n`;
+        output += `takepic, takepic_rear, showpics, showpic [id], delpic [id], clearpics, camera_info\n\n`;
+        
+        output += `<span class="avin-terminal-info">💻 SYSTEM COMMANDS</span>\n`;
+        output += `sysinfo, device, time, date, weather [city]\n\n`;
+        
+        output += `<span class="avin-terminal-info">📰 NEWS COMMANDS</span>\n`;
+        output += `news [category] - Categories: tech\n\n`;
+        
+        output += `<span class="avin-terminal-info">🎮 EASTER EGG COMMANDS</span>\n`;
+        output += `matrix, hacker, dance, rocket, coffee, unicorn, pizza, fortune, konami, secret, moon\n\n`;
+        
+        output += `<span class="avin-terminal-error">💀 DESTRUCTIVE COMMANDS (USE AT YOUR OWN RISK!)</span>\n`;
+        output += `destroy, destruct, nuke, boom, kaboom, apocalypse, end, terminate\n\n`;
+        
+        output += `<span style="color: #666;">${'─'.repeat(60)}</span>\n`;
+        output += `<span class="avin-terminal-info">💡 Type 'hints' for discovery tips or 'aliases' for command shortcuts!</span>`;
+        
+        return output;
+    },
+    
+    hints: () => {
+        const tips = [
+            "🎯 Try typing common Unix commands like 'sudo', 'vim', or 'nano' for surprises!",
+            "🌙 Some commands are hidden behind emoji shortcuts - try typing emojis!",
+            "🎮 Classic gaming references might work as commands...",
+            "☕ Food and drink commands might brew up something interesting!",
+            "🚀 Space-related commands could launch something amazing!",
+            "🦄 Mythical creatures might be hiding in the command system!",
+            "🎪 Try typing 'thematrix' or other movie references!",
+            "🔍 Some aliases use different names - 'luna' instead of 'moon'!",
+            "🎲 Random words sometimes work - experiment with fun commands!",
+            "✨ The best easter eggs are discovered by accident - keep exploring!"
+        ];
+        
+        let output = `<span class="avin-terminal-success">💡 DISCOVERY HINTS & TIPS</span>\n`;
+        output += `<span style="color: #666;">${'─'.repeat(50)}</span>\n\n`;
+        
+        tips.forEach((tip, index) => {
+            output += `<span class="avin-terminal-info">[${index + 1}]</span> ${tip}\n`;
+        });
+        
+        output += `\n<span style="color: #666;">${'─'.repeat(50)}</span>\n`;
+        output += `<span class="avin-terminal-success">🎪 Keep experimenting! There are more secrets to find!</span>`;
+        
+        return output;
+    },
+    
+    aliases: () => {
+        let output = `<span class="avin-terminal-success">🔗 COMMAND ALIASES & SHORTCUTS</span>\n`;
+        output += `<span style="color: #666;">${'─'.repeat(60)}</span>\n\n`;
+        
+        output += `<span class="avin-terminal-info">📂 COMMON UNIX ALIASES</span>\n`;
+        output += `ll, dir → ls | cls → clear | whoami → about\n`;
+        output += `man, info → help | tree → ls | find → help message\n\n`;
+        
+        output += `<span class="avin-terminal-info">🎮 FUN ALIASES</span>\n`;
+        output += `hack → hacker | thematrix → matrix\n`;
+        output += `luna, lunar → moon | certifications → certs\n\n`;
+        
+        output += `<span class="avin-terminal-info">🎭 EMOJI SHORTCUTS</span>\n`;
+        output += `🚀 → rocket | ☕ → coffee | 🦄 → unicorn\n`;
+        output += `🍕 → pizza | 🌙 → moon\n\n`;
+        
+        output += `<span class="avin-terminal-info">💻 DEVELOPER COMMANDS</span>\n`;
+        output += `sudo, vim, nano, emacs → Humorous responses\n`;
+        output += `rm, mkdir, chmod → Safe joke responses\n\n`;
+        
+        output += `<span style="color: #666;">${'─'.repeat(60)}</span>\n`;
+        output += `<span class="avin-terminal-success">✨ Try these shortcuts to discover hidden features!</span>`;
+        
+        return output;
+    },
+    
+    explore: () => {
+        const suggestions = [
+            "🎲 Try: matrix, hacker, dance, rocket",
+            "☕ Try: coffee, pizza, unicorn, fortune", 
+            "🌙 Try: moon, luna, secret, konami",
+            "💻 Try: sudo, vim, hack, thematrix",
+            "🎮 Try: ☕, 🚀, 🦄, 🍕, 🌙"
+        ];
+        
+        let output = `<span class="avin-terminal-success">🗺️ EXPLORATION SUGGESTIONS</span>\n`;
+        output += `<span style="color: #666;">${'─'.repeat(50)}</span>\n\n`;
+        
+        suggestions.forEach((suggestion, index) => {
+            output += `<span class="avin-terminal-info">[${index + 1}]</span> ${suggestion}\n`;
+        });
+        
+        output += `\n<span class="avin-terminal-success">🎪 Each command has its own surprise - happy exploring!</span>`;
+        
+        return output;
+    },
+    
+    // Override the built-in help command
+    help: () => {
+        let output = `<span class="avin-terminal-success">🚀 AvinTerm v1.0.0 - Interactive Portfolio Terminal</span>\n`;
+        output += `<span style="color: #666;">${'─'.repeat(60)}</span>\n\n`;
+        
+        output += `<span class="avin-terminal-info">📋 ESSENTIAL COMMANDS</span>\n`;
+        output += `help           Show this help message\n`;
+        output += `about          Learn about Avinav\n`;
+        output += `projects       View my projects\n`;
+        output += `skills         Technical skills overview\n`;
+        output += `certs          View certifications & courses\n`;
+        output += `contact        Get in touch\n`;
+        output += `clear          Clear terminal\n\n`;
+        
+        output += `<span class="avin-terminal-info">🔍 DISCOVERY COMMANDS</span>\n`;
+        output += `commands       📋 Show ALL available commands (60+ commands!)\n`;
+        output += `hints          💡 Tips for discovering easter eggs\n`;
+        output += `aliases        🔗 Command shortcuts and alternatives\n`;
+        output += `explore        🗺️  Suggestions for fun commands to try\n\n`;
+        
+        output += `<span class="avin-terminal-info">📂 FILE SYSTEM</span>\n`;
+        output += `ls             List available files\n`;
+        output += `cat [file]     Read file contents\n`;
+        output += `echo [text]    Display text\n\n`;
+        
+        output += `<span style="color: #666;">${'─'.repeat(60)}</span>\n`;
+        output += `<span class="avin-terminal-success">🚀 Want to explore more? Type 'commands' to see ALL available features!</span>\n`;
+        output += `<span class="avin-terminal-info">🎪 Includes 60+ commands, easter eggs, and hidden surprises!</span>\n`;
+        output += `<span class="avin-terminal-info">💡 Pro tip: Try 'hints' to discover secret commands!</span>`;
+        
+        return output;
+    },
+    
+    // EPIC DESTRUCTION EASTER EGG
+    destroy: () => {
+        setTimeout(() => {
+            // Step 1: Close terminal with dramatic message
+            showNotification('System Alert', '⚠️ DESTRUCTION SEQUENCE INITIATED! EVACUATE IMMEDIATELY!', 3000);
+            
+            setTimeout(() => {
+                // Hide terminal
+                if (window.terminal) {
+                    window.terminal.hideTerminal();
+                }
+                
+                // Step 2: Asteroid animation
+                createAsteroidAttack();
+                
+            }, 2000);
+            
+        }, 500);
+        
+        return `<span class="avin-terminal-error">💀 INITIATING PLANETARY DESTRUCTION SEQUENCE...</span><br>
+                <span class="avin-terminal-error">🚨 WARNING: ASTEROID INCOMING!</span><br>
+                <span class="avin-terminal-info">📡 Closing all communications...</span>`;
+    },
+    
+    // Aliases for destroy command
+    destruct: () => commands.destroy(),
+    nuke: () => commands.destroy(),
+    boom: () => commands.destroy(),
+    kaboom: () => commands.destroy()
 };
+
+// Asteroid destruction sequence  
+function createAsteroidAttack() {
+    // Create MOON-SIZED asteroid coming from LEFT
+    const asteroid = document.createElement('div');
+    asteroid.style.cssText = `
+        position: fixed;
+        top: 15%;
+        left: -200px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, #444 10%, #666 30%, #888 50%, #aaa 80%);
+        border-radius: 50%;
+        z-index: 100000;
+        transition: all 3s ease-in;
+        box-shadow: 
+            inset -20px -20px 0px rgba(0,0,0,0.4),
+            0 0 80px rgba(255, 69, 0, 0.8);
+        border: 2px solid #999;
+    `;
+    
+    // Add crater details to make it look like a moon/asteroid
+    asteroid.innerHTML = `
+        <div style="
+            position: absolute;
+            top: 30%;
+            left: 20%;
+            width: 30px;
+            height: 30px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50%;
+        "></div>
+        <div style="
+            position: absolute;
+            top: 60%;
+            left: 60%;
+            width: 20px;
+            height: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 50%;
+        "></div>
+        <div style="
+            position: absolute;
+            top: 20%;
+            left: 70%;
+            width: 15px;
+            height: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 50%;
+        "></div>
+    `;
+    document.body.appendChild(asteroid);
+    
+    // Animate moon-sized asteroid towards Earth
+    setTimeout(() => {
+        const earthContainer = document.querySelector('.earth-container');
+        const earthRect = earthContainer ? earthContainer.getBoundingClientRect() : 
+                         { left: window.innerWidth * 0.8, top: window.innerHeight * 0.3 };
+        
+        // Direct collision course with Earth
+        asteroid.style.left = (earthRect.left - 50) + 'px';
+        asteroid.style.top = (earthRect.top - 50) + 'px';
+        asteroid.style.transform = 'rotate(720deg) scale(1.2)';
+    }, 100);
+    
+    // DIRECT IMPACT
+    setTimeout(() => {
+        // Remove asteroid
+        document.body.removeChild(asteroid);
+        
+        // Earth explosion effect
+        if (window.earth3D) {
+            const earthContainer = document.querySelector('.earth-container');
+            if (earthContainer) {
+                earthContainer.style.animation = 'explode 1s ease-out';
+            }
+        }
+        
+        // KABOOM explosion
+        setTimeout(() => {
+            createKaboomExplosion();
+        }, 500);
+        
+        // Start broken TV effect  
+        setTimeout(() => {
+            startBrokenTVEffect();
+        }, 1000);
+        
+    }, 3100);
+}
+
+function createKaboomExplosion() {
+    // Simple KABOOM explosion
+    const explosion = document.createElement('div');
+    explosion.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 200px;
+        z-index: 100001;
+        color: #ff4444;
+        text-shadow: 0 0 50px #ff0000;
+        animation: explosionGrow 1s ease-out;
+    `;
+    explosion.innerHTML = '💥';
+    document.body.appendChild(explosion);
+    
+    // Change to KABOOM text
+    setTimeout(() => {
+        explosion.innerHTML = 'KABOOM!';
+        explosion.style.fontSize = '120px';
+        explosion.style.fontWeight = 'bold';
+        explosion.style.fontFamily = 'Impact, Arial Black, sans-serif';
+    }, 500);
+    
+    // Remove explosion after animation
+    setTimeout(() => {
+        document.body.removeChild(explosion);
+    }, 1500);
+}
+
+function startBrokenTVEffect() {
+    // Create broken TV overlay
+    const brokenTV = document.createElement('div');
+    brokenTV.className = 'broken-tv-overlay';
+    brokenTV.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(255,255,255,0.03) 2px,
+            rgba(255,255,255,0.03) 4px
+        );
+        z-index: 99999;
+        animation: tvStatic 0.1s infinite, tvFlicker 0.3s infinite;
+        pointer-events: none;
+    `;
+    document.body.appendChild(brokenTV);
+    
+    // Make all text glitchy
+    document.body.style.animation = 'textGlitch 0.2s infinite';
+    
+    // After 3 seconds of broken TV, shutdown completely
+    setTimeout(() => {
+        // Complete shutdown - no refresh option
+        document.body.innerHTML = `
+            <div style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #000;
+                color: #ff0000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Courier New', monospace;
+                font-size: 4rem;
+                text-align: center;
+                animation: fadeIn 2s ease-in;
+            ">
+                💀 SYSTEM DESTROYED 💀<br>
+                <div style="font-size: 2rem; margin-top: 2rem; color: #333;">
+                    Connection terminated.
+                </div>
+            </div>
+        `;
+        
+        // Try to close the window/tab after showing destruction message
+        setTimeout(() => {
+            window.close();
+        }, 3000);
+        
+    }, 3000);
+}
             // Initialize terminal
             window.terminal = new AvinTerm({
                 username: 'user',
                 hostname: 'avinterm',
-                welcomeMessage: 'Welcome to AvinTerm v1.0.0! Type "help" for available commands.',
+                welcomeMessage: 'Welcome to AvinTerm v1.0.0! Type "help" to start or "commands" to explore more.',
                 showOnLoad: false,
                 commands: customCommands
             });
@@ -2502,7 +3569,7 @@ document.querySelectorAll('.social-link').forEach(link => {
                             setTimeout(() => {
                                 window.terminal.addOutput('═══════════════════════════════════════', 'avin-terminal-info');
                                 window.terminal.addOutput('🎯 Welcome back to the top!', 'avin-terminal-success');
-                                window.terminal.addOutput('Type "help" to see available commands', 'avin-terminal-info');
+                                window.terminal.addOutput('Type "help" to start or "commands" to explore more!', 'avin-terminal-info');
                                 window.terminal.addOutput('═══════════════════════════════════════', 'avin-terminal-info');
                             }, 500);
                         }

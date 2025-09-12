@@ -1,0 +1,119 @@
+{
+  "certifications": [
+    {
+      "id": "udemy-fullstack",
+      "title": "The Complete Full-Stack Web Development Bootcamp",
+      "issuer": "Udemy",
+      "date": "2024",
+      "credentialId": "UC-d6ff531b-df80-4d56-88e6-eee57b2268d9",
+      "verificationUrl": "https://www.udemy.com/certificate/UC-d6ff531b-df80-4d56-88e6-eee57b2268d9/",
+      "image": "udemy-fullstack-bootcamp.png",
+      "description": "Become a Full-Stack Web Developer with just ONE course. HTML, CSS, Javascript, Node, React, PostgreSQL, Web3 and DApps",
+      "skills": ["HTML", "CSS", "JavaScript", "Node.js", "React", "PostgreSQL", "Web3", "DApps"]
+    },
+    {
+      "id": "udemy-ethical-hacking",
+      "title": "Complete Ethical Hacking Bootcamp",
+      "issuer": "Udemy",
+      "date": "2024",
+      "credentialId": "UC-f9b5e74c-c523-4a0c-810a-b7c1fd94746f",
+      "verificationUrl": "https://www.udemy.com/certificate/UC-f9b5e74c-c523-4a0c-810a-b7c1fd94746f/",
+      "image": "udemy-ethical-hacking.png",
+      "description": "Complete bootcamp covering ethical hacking methodologies, penetration testing, and cybersecurity practices",
+      "skills": ["Ethical Hacking", "Penetration Testing", "Cybersecurity", "Network Security", "Web Security"]
+    },
+    {
+      "id": "udemy-python-datascience",
+      "title": "Python for Data Science and Machine Learning Bootcamp",
+      "issuer": "Udemy",
+      "date": "2024",
+      "credentialId": "UC-0663a7ca-d0ee-447c-8b56-8900e7eb406b",
+      "verificationUrl": "https://www.udemy.com/certificate/UC-0663a7ca-d0ee-447c-8b56-8900e7eb406b/",
+      "image": "udemy-python-datascience.png",
+      "description": "Comprehensive bootcamp covering Python programming for data analysis, visualization, and machine learning",
+      "skills": ["Python", "Data Science", "Machine Learning", "Pandas", "NumPy", "Matplotlib", "Seaborn", "Scikit-learn"]
+    },
+    {
+      "id": "deeplearning-course1",
+      "title": "DeepLearning.AI Course - Neural Networks and Deep Learning",
+      "issuer": "DeepLearning.AI",
+      "date": "2024",
+      "credentialId": "b75b9d1e-d010-4c81-a301-2166f46976b1",
+      "verificationUrl": "https://learn.deeplearning.ai/accomplishments/b75b9d1e-d010-4c81-a301-2166f46976b1?usp=sharing",
+      "image": "deeplearning-ai-course1.png",
+      "description": "Foundations of deep learning and neural networks",
+      "skills": ["Neural Networks", "Deep Learning", "Python", "TensorFlow", "Machine Learning"]
+    },
+    {
+      "id": "deeplearning-course2",
+      "title": "DeepLearning.AI Course - Improving Deep Neural Networks",
+      "issuer": "DeepLearning.AI",
+      "date": "2024",
+      "credentialId": "0ed57251-548d-416d-82ea-854226ce7c48",
+      "verificationUrl": "https://learn.deeplearning.ai/accomplishments/0ed57251-548d-416d-82ea-854226ce7c48?usp=sharing",
+      "image": "deeplearning-ai-course2.png",
+      "description": "Hyperparameter tuning, regularization and optimization",
+      "skills": ["Hyperparameter Tuning", "Regularization", "Optimization", "Deep Learning", "Neural Networks"]
+    },
+    {
+      "id": "deeplearning-course3",
+      "title": "DeepLearning.AI Course - Structuring Machine Learning Projects",
+      "issuer": "DeepLearning.AI",
+      "date": "2024",
+      "credentialId": "61a543ce-6cb8-4fbe-ab97-d911dd58e881",
+      "verificationUrl": "https://learn.deeplearning.ai/accomplishments/61a543ce-6cb8-4fbe-ab97-d911dd58e881?usp=sharing",
+      "image": "deeplearning-ai-course3.png",
+      "description": "How to build a successful machine learning project",
+      "skills": ["ML Strategy", "Project Management", "Machine Learning", "Data Strategy", "Model Evaluation"]
+    },
+    {
+      "id": "deeplearning-course4",
+      "title": "DeepLearning.AI Course - Convolutional Neural Networks",
+      "issuer": "DeepLearning.AI",
+      "date": "2024",
+      "credentialId": "ba1260ba-4628-4324-8dbe-432b51ab6657",
+      "verificationUrl": "https://learn.deeplearning.ai/accomplishments/ba1260ba-4628-4324-8dbe-432b51ab6657?usp=sharing",
+      "image": "deeplearning-ai-course4.png",
+      "description": "Computer vision and convolutional neural networks",
+      "skills": ["CNN", "Computer Vision", "Image Recognition", "Deep Learning", "Neural Networks"]
+    },
+    {
+      "id": "deeplearning-course5",
+      "title": "DeepLearning.AI Course - Sequence Models",
+      "issuer": "DeepLearning.AI",
+      "date": "2024",
+      "credentialId": "299e4411-3119-414a-86bd-d3c6c3740236",
+      "verificationUrl": "https://learn.deeplearning.ai/accomplishments/299e4411-3119-414a-86bd-d3c6c3740236?usp=sharing",
+      "image": "deeplearning-ai-course5.png",
+      "description": "Natural language processing and sequence models",
+      "skills": ["RNN", "LSTM", "NLP", "Sequence Models", "Natural Language Processing", "Deep Learning"]
+    }
+  ],
+  "competitions": [
+    {
+      "id": "comp-example",
+      "title": "Add Your Competition Wins Here",
+      "organizer": "",
+      "date": "",
+      "position": "",
+      "category": "",
+      "image": "",
+      "description": "",
+      "technologies": [],
+      "prize": ""
+    }
+  ],
+  "courses": [
+    {
+      "id": "course-example",
+      "title": "Add Additional Courses Here",
+      "provider": "",
+      "completionDate": "",
+      "certificateUrl": "",
+      "image": "",
+      "skills": [],
+      "grade": "",
+      "duration": ""
+    }
+  ]
+}

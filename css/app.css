@@ -1341,6 +1341,24 @@
         .avin-terminal-error {
             color: #ff5f56;
         }
+        
+        .avin-terminal-suggestion {
+            color: #888 !important;
+            font-style: italic;
+            margin: 0.2rem 0;
+        }
+        
+        .avin-terminal-info {
+            color: var(--accent) !important;
+            font-weight: bold;
+        }
+        
+        .avin-terminal-input-preview {
+            color: #666;
+            background: rgba(0, 232, 223, 0.1);
+            padding: 0 4px;
+            border-radius: 2px;
+        }
 
         .avin-terminal-info {
             color: #ffbd2e;
@@ -1693,4 +1711,208 @@
     border-left: 2px solid #607d8b;
     padding-left: 10px;
 }
+
+/* Easter Egg Animations */
+@keyframes matrix-rain {
+    0% { opacity: 0; transform: translateY(-100vh); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(100vh); }
+}
+
+.matrix-effect::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(transparent, rgba(0, 255, 0, 0.2), transparent);
+    animation: matrix-rain 2s infinite;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+@keyframes rainbow-bg {
+    0% { filter: hue-rotate(0deg) saturate(1.5); }
+    25% { filter: hue-rotate(90deg) saturate(1.8); }
+    50% { filter: hue-rotate(180deg) saturate(2); }
+    75% { filter: hue-rotate(270deg) saturate(1.8); }
+    100% { filter: hue-rotate(360deg) saturate(1.5); }
+}
+
+@keyframes glow-pulse {
+    0% { box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent); }
+    50% { box-shadow: 0 0 20px var(--accent), 0 0 30px var(--accent), 0 0 40px var(--accent); }
+    100% { box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent); }
+}
+
+.easter-egg-glow {
+    animation: glow-pulse 1.5s infinite;
+}
+
+/* Sparkle effect for special commands */
+@keyframes sparkle {
+    0% { opacity: 1; transform: scale(0) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1) rotate(180deg); }
+    100% { opacity: 0; transform: scale(0) rotate(360deg); }
+}
+
+.sparkle {
+    position: absolute;
+    color: #ffd700;
+    font-size: 12px;
+    pointer-events: none;
+    animation: sparkle 1s ease-out forwards;
+}
+
+/* Moon revolution animations */
+@keyframes moonOrbit {
+    0% { transform: translate(-50%, -50%) rotate(0deg) translateX(100px) rotate(0deg); }
+    25% { transform: translate(-50%, -50%) rotate(90deg) translateX(100px) rotate(-90deg); }
+    50% { transform: translate(-50%, -50%) rotate(180deg) translateX(100px) rotate(-180deg); }
+    75% { transform: translate(-50%, -50%) rotate(270deg) translateX(100px) rotate(-270deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg) translateX(100px) rotate(-360deg); }
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* DESTRUCTION SEQUENCE ANIMATIONS */
+@keyframes explode {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.5); opacity: 0.5; }
+    100% { transform: scale(0); opacity: 0; }
+}
+
+@keyframes tvStatic {
+    0% { opacity: 0.8; }
+    50% { opacity: 0.4; }
+    100% { opacity: 0.8; }
+}
+
+@keyframes tvFlicker {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 10px; }
+}
+
+@keyframes textGlitch {
+    0% { 
+        transform: translateX(0); 
+        filter: hue-rotate(0deg); 
+    }
+    10% { 
+        transform: translateX(-2px); 
+        filter: hue-rotate(90deg); 
+    }
+    20% { 
+        transform: translateX(2px); 
+        filter: hue-rotate(180deg); 
+    }
+    30% { 
+        transform: translateX(-1px); 
+        filter: hue-rotate(270deg); 
+    }
+    40% { 
+        transform: translateX(1px); 
+        filter: hue-rotate(360deg); 
+    }
+    50% { 
+        transform: translateX(0); 
+        filter: hue-rotate(0deg); 
+    }
+    100% { 
+        transform: translateX(0); 
+        filter: hue-rotate(0deg); 
+    }
+}
+
+@keyframes intenseShake {
+    0% { transform: translateX(0); }
+    10% { transform: translateX(-15px) translateY(-10px); }
+    20% { transform: translateX(15px) translateY(10px); }
+    30% { transform: translateX(-10px) translateY(15px); }
+    40% { transform: translateX(10px) translateY(-15px); }
+    50% { transform: translateX(-20px) translateY(-5px); }
+    60% { transform: translateX(20px) translateY(5px); }
+    70% { transform: translateX(-5px) translateY(-20px); }
+    80% { transform: translateX(5px) translateY(20px); }
+    90% { transform: translateX(-10px) translateY(-10px); }
+    100% { transform: translateX(10px) translateY(10px); }
+}
+
+@keyframes massiveExplosion {
+    0% { 
+        transform: translate(-50%, -50%) scale(0); 
+        opacity: 0; 
+    }
+    20% { 
+        transform: translate(-50%, -50%) scale(3); 
+        opacity: 1; 
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(2.5); 
+        opacity: 1; 
+    }
+    100% { 
+        transform: translate(-50%, -50%) scale(4); 
+        opacity: 0.8; 
+    }
+}
+
+@keyframes flashEffect {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0; }
+}
+
+@keyframes explosionGrow {
+    0% { 
+        transform: translate(-50%, -50%) scale(0); 
+        opacity: 0; 
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(1.5); 
+        opacity: 1; 
+    }
+    100% { 
+        transform: translate(-50%, -50%) scale(1); 
+        opacity: 1; 
+    }
+}
+
+@keyframes finalDestruction {
+    0% { 
+        opacity: 1; 
+        filter: brightness(1); 
+    }
+    50% { 
+        opacity: 0.5; 
+        filter: brightness(0.5) contrast(0.5); 
+    }
+    100% { 
+        opacity: 0; 
+        filter: brightness(0) contrast(0); 
+    }
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes typing {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(0, 255, 0, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
+}
+
   
