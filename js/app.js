@@ -3071,92 +3071,216 @@ User agent: ${userAgent}`;
 
 // Asteroid destruction sequence  
 function createAsteroidAttack() {
-    // Create MOON-SIZED asteroid coming from LEFT
-    const asteroid = document.createElement('div');
-    asteroid.style.cssText = `
-        position: fixed;
-        top: 15%;
-        left: -200px;
-        width: 200px;
-        height: 200px;
-        background: radial-gradient(circle, #444 10%, #666 30%, #888 50%, #aaa 80%);
-        border-radius: 50%;
-        z-index: 100000;
-        transition: all 3s ease-in;
-        box-shadow: 
-            inset -20px -20px 0px rgba(0,0,0,0.4),
-            0 0 80px rgba(255, 69, 0, 0.8);
-        border: 2px solid #999;
-    `;
+    // Step 1: Keep everything exactly as original - no changes to scene size or positions
     
-    // Add crater details to make it look like a moon/asteroid
-    asteroid.innerHTML = `
-        <div style="
-            position: absolute;
-            top: 30%;
-            left: 20%;
-            width: 30px;
-            height: 30px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 50%;
-        "></div>
-        <div style="
-            position: absolute;
-            top: 60%;
-            left: 60%;
-            width: 20px;
-            height: 20px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 50%;
-        "></div>
-        <div style="
-            position: absolute;
-            top: 20%;
-            left: 70%;
-            width: 15px;
-            height: 15px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 50%;
-        "></div>
-    `;
-    document.body.appendChild(asteroid);
-    
-    // Animate moon-sized asteroid towards Earth
-    setTimeout(() => {
-        const earthContainer = document.querySelector('.earth-container');
-        const earthRect = earthContainer ? earthContainer.getBoundingClientRect() : 
-                         { left: window.innerWidth * 0.8, top: window.innerHeight * 0.3 };
-        
-        // Direct collision course with Earth
-        asteroid.style.left = (earthRect.left - 50) + 'px';
-        asteroid.style.top = (earthRect.top - 50) + 'px';
-        asteroid.style.transform = 'rotate(720deg) scale(1.2)';
-    }, 100);
-    
-    // DIRECT IMPACT
-    setTimeout(() => {
-        // Remove asteroid
-        document.body.removeChild(asteroid);
-        
-        // Earth explosion effect
-        if (window.earth3D) {
-            const earthContainer = document.querySelector('.earth-container');
-            if (earthContainer) {
-                earthContainer.style.animation = 'explode 1s ease-out';
+    // Step 2: Create 3D asteroid in the Three.js scene
+    if (window.earth3D && window.earth3D.scene) {
+        setTimeout(() => {
+            // Create 3D asteroid geometry (moon-sized)
+            const asteroidGeometry = new THREE.SphereGeometry(15, 16, 12);
+            
+            // Make it irregular by modifying vertices
+            const vertices = asteroidGeometry.attributes.position.array;
+            for (let i = 0; i < vertices.length; i += 3) {
+                const vertex = new THREE.Vector3(vertices[i], vertices[i + 1], vertices[i + 2]);
+                vertex.multiplyScalar(0.8 + Math.random() * 0.4);
+                vertices[i] = vertex.x;
+                vertices[i + 1] = vertex.y;
+                vertices[i + 2] = vertex.z;
             }
-        }
-        
-        // KABOOM explosion
-        setTimeout(() => {
-            createKaboomExplosion();
-        }, 500);
-        
-        // Start broken TV effect  
-        setTimeout(() => {
-            startBrokenTVEffect();
+            asteroidGeometry.attributes.position.needsUpdate = true;
+            asteroidGeometry.computeVertexNormals();
+            
+            // Create heated asteroid material with front glow
+            const asteroidMaterial = new THREE.MeshLambertMaterial({
+                color: 0x884444,
+                emissive: 0x331100
+            });
+            
+            // Add a glowing front part
+            const frontGlow = new THREE.SphereGeometry(12, 12, 8);
+            const frontGlowMaterial = new THREE.MeshBasicMaterial({
+                color: 0xff4400,
+                transparent: true,
+                opacity: 0.6
+            });
+            const frontGlowMesh = new THREE.Mesh(frontGlow, frontGlowMaterial);
+            frontGlowMesh.position.set(8, 0, 0); // Position at front of asteroid
+            
+            const asteroid = new THREE.Mesh(asteroidGeometry, asteroidMaterial);
+            
+            // Create trailing particles
+            const particles = [];
+            const particleGeometry = new THREE.SphereGeometry(0.5, 4, 4);
+            for (let i = 0; i < 8; i++) {
+                const particleMaterial = new THREE.MeshBasicMaterial({
+                    color: Math.random() > 0.5 ? 0xff6600 : 0xffaa00,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                particle.position.set(
+                    -15 - (i * 3), // Trail behind asteroid
+                    (Math.random() - 0.5) * 4,
+                    (Math.random() - 0.5) * 4
+                );
+                particles.push(particle);
+            }
+            
+            // Create asteroid group with main body, front glow, and particles
+            const asteroidGroup = new THREE.Group();
+            asteroidGroup.add(asteroid);
+            asteroidGroup.add(frontGlowMesh);
+            particles.forEach(particle => asteroidGroup.add(particle));
+            
+            // Position asteroid group front-left and slightly above Earth
+            asteroidGroup.position.set(-200, 80, 150); // Front-left, above, closer to viewer
+            
+            // Add to scene
+            window.earth3D.scene.add(asteroidGroup);
+            window.earth3D.asteroid = asteroidGroup;
+            
+            // Step 3: Animate collision with distance-based collision detection
+            const earth = window.earth3D.earth;
+            const earthRadius = earth ? earth.geometry.parameters.radius : 50;
+            const asteroidRadius = 15;
+            const earthPos = earth ? earth.position : { x: 0, y: 0, z: 0 };
+            
+            // Starting position and movement direction
+            const startPos = { x: -200, y: 80, z: 150 };
+            const direction = { x: 3, y: -1.2, z: -2 }; // Movement per frame
+            
+            const animateCollision = () => {
+                // Calculate distance between asteroid center and Earth center
+                const dx = asteroidGroup.position.x - earthPos.x;
+                const dy = asteroidGroup.position.y - earthPos.y;
+                const dz = asteroidGroup.position.z - earthPos.z;
+                const distance = Math.sqrt(dx*dx + dy*dy + dz*dz);
+                
+                // Check if surfaces are touching (with slight penetration)
+                const collisionDistance = earthRadius + asteroidRadius - 8; // 8 units penetration
+                
+                if (distance > collisionDistance) {
+                    // Move asteroid towards Earth
+                    asteroidGroup.position.x += direction.x;
+                    asteroidGroup.position.y += direction.y;
+                    asteroidGroup.position.z += direction.z;
+                    
+                    // Rotate asteroid as it approaches
+                    asteroidGroup.rotation.x += 0.1;
+                    asteroidGroup.rotation.y += 0.05;
+                    asteroidGroup.rotation.z += 0.03;
+                    
+                    // Animate particles - subtle flickering and movement
+                    particles.forEach((particle, index) => {
+                        particle.material.opacity = 0.6 + Math.random() * 0.4;
+                        particle.position.y += (Math.random() - 0.5) * 0.2;
+                        particle.position.z += (Math.random() - 0.5) * 0.2;
+                    });
+                    
+                    requestAnimationFrame(animateCollision);
+                } else {
+                    // COLLISION IMPACT
+                    // Get exact collision point
+                    const collisionPoint = {
+                        x: asteroidGroup.position.x,
+                        y: asteroidGroup.position.y,
+                        z: asteroidGroup.position.z
+                    };
+                    
+                    // Create impact particles at collision point
+                    const impactParticles = [];
+                    for (let i = 0; i < 15; i++) {
+                        const impactParticleGeometry = new THREE.SphereGeometry(0.8, 4, 4);
+                        const impactParticleMaterial = new THREE.MeshBasicMaterial({
+                            color: Math.random() > 0.6 ? 0xff0000 : (Math.random() > 0.5 ? 0xff6600 : 0xffaa00),
+                            transparent: true,
+                            opacity: 1.0
+                        });
+                        const impactParticle = new THREE.Mesh(impactParticleGeometry, impactParticleMaterial);
+                        
+                        // Position at collision point with slight random spread
+                        impactParticle.position.set(
+                            collisionPoint.x + (Math.random() - 0.5) * 8,
+                            collisionPoint.y + (Math.random() - 0.5) * 8,
+                            collisionPoint.z + (Math.random() - 0.5) * 8
+                        );
+                        
+                        // Add velocity for explosion effect
+                        impactParticle.velocity = {
+                            x: (Math.random() - 0.5) * 4,
+                            y: (Math.random() - 0.5) * 4,
+                            z: (Math.random() - 0.5) * 4
+                        };
+                        
+                        window.earth3D.scene.add(impactParticle);
+                        impactParticles.push(impactParticle);
+                    }
+                    
+                    // Animate impact particles
+                    let impactTime = 0;
+                    const animateImpact = () => {
+                        if (impactTime < 60) { // 60 frames of impact animation
+                            impactTime++;
+                            
+                            impactParticles.forEach(particle => {
+                                // Move particles outward
+                                particle.position.x += particle.velocity.x;
+                                particle.position.y += particle.velocity.y;
+                                particle.position.z += particle.velocity.z;
+                                
+                                // Fade particles over time
+                                particle.material.opacity = Math.max(0, 1.0 - (impactTime / 60));
+                                
+                                // Slow down particles
+                                particle.velocity.x *= 0.98;
+                                particle.velocity.y *= 0.98;
+                                particle.velocity.z *= 0.98;
+                            });
+                            
+                            requestAnimationFrame(animateImpact);
+                        } else {
+                            // Remove impact particles
+                            impactParticles.forEach(particle => {
+                                window.earth3D.scene.remove(particle);
+                            });
+                        }
+                    };
+                    animateImpact();
+                    
+                    // Make Earth shake and crack
+                    const earth = window.earth3D.earth;
+                    if (earth) {
+                        let shakeIntensity = 0.3;
+                        const earthShake = () => {
+                            if (shakeIntensity > 0) {
+                                earth.position.x = (Math.random() - 0.5) * shakeIntensity;
+                                earth.position.y = (Math.random() - 0.5) * shakeIntensity;
+                                earth.position.z = (Math.random() - 0.5) * shakeIntensity;
+                                shakeIntensity *= 0.95;
+                                requestAnimationFrame(earthShake);
+                            } else {
+                                earth.position.set(0, 0, 0);
+                            }
+                        };
+                        earthShake();
+                    }
+                    
+                    // Remove asteroid group after impact
+                    window.earth3D.scene.remove(asteroidGroup);
+                    
+                    // Start broken TV effect directly after collision
+                    setTimeout(() => {
+                        startBrokenTVEffect();
+                    }, 500);
+                }
+            };
+            
+            // Start collision animation after 1 second
+            setTimeout(animateCollision, 1000);
+            
         }, 1000);
-        
-    }, 3100);
+    }
 }
 
 function createKaboomExplosion() {
@@ -3216,39 +3340,22 @@ function startBrokenTVEffect() {
     // Make all text glitchy
     document.body.style.animation = 'textGlitch 0.2s infinite';
     
-    // After 3 seconds of broken TV, shutdown completely
+    // After 2 seconds of broken TV, close tab directly
     setTimeout(() => {
-        // Complete shutdown - no refresh option
-        document.body.innerHTML = `
-            <div style="
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: #000;
-                color: #ff0000;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-family: 'Courier New', monospace;
-                font-size: 4rem;
-                text-align: center;
-                animation: fadeIn 2s ease-in;
-            ">
-                💀 SYSTEM DESTROYED 💀<br>
-                <div style="font-size: 2rem; margin-top: 2rem; color: #333;">
-                    Connection terminated.
-                </div>
-            </div>
-        `;
+        // Close the tab immediately
+        window.close();
         
-        // Try to close the window/tab after showing destruction message
-        setTimeout(() => {
+        // Fallback if window.close() doesn't work (some browsers block it)
+        // Try alternative methods
+        if (window.opener) {
+            window.opener = null;
+            window.open('', '_self');
             window.close();
-        }, 3000);
-        
-    }, 3000);
+        } else {
+            // Last resort: navigate to about:blank
+            window.location.href = 'about:blank';
+        }
+    }, 2000);
 }
             // Initialize terminal
             window.terminal = new AvinTerm({
