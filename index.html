@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avinav Gupta | Portfolio</title>
+    <title id="page-title">Avinav Gupta | Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/app.css">
     <!-- Three.js for 3D Earth -->
@@ -49,7 +49,7 @@
     <nav class="navbar">
         <div class="logo">
             <i class="fas fa-terminal"></i>
-            <span>Avinrique</span>
+            <span id="nav-alias">Avinrique</span>
         </div>
         <div class="menu-toggle" id="menu-toggle">
             <span></span>
@@ -69,9 +69,9 @@
     <section class="hero" id="home">
         <div class="container" style="transform: translateX(-15%);">
             <div class="hero-content">
-                <h1>Hello, I'm <span>Avinav Gupta</span></h1>
+                <h1>Hello, I'm <span id="hero-name">Avinav Gupta</span></h1>
                 <p>
-                    <span class="typed-text">Full-Stack Developer | AI Specialist | Cybersecurity Enthusiast</span>
+                    <span class="typed-text" id="hero-tagline">Full-Stack Developer | AI Specialist | Cybersecurity Enthusiast</span>
                 </p>
                 <div class="hero-buttons">
                     <a href="#projects" class="btn btn-primary">
@@ -95,19 +95,19 @@
             <h2 class="section-title">About Me</h2>
             <div class="about-content">
                 <div class="about-image">
-                    <img src="https://avatars.githubusercontent.com/u/67151782?v=4" alt="Abhinav Gupta">
+                    <img id="about-avatar" src="https://avatars.githubusercontent.com/u/67151782?v=4" alt="Abhinav Gupta">
                 </div>
-                <div class="about-text">
+                <div class="about-text" id="about-text">
                     <p>
-                        I’m Abhinav Gupta — a full-stack developer, automation enthusiast, and AI tinkerer. Also known online as <strong>Avinrique</strong>, I blend deep technical skills with hands-on creativity. My core stack includes JavaScript (Node.js), Python, Java, and Bash, and I’m comfortable across both Linux-based systems and cloud platforms like AWS and Azure.
+                        I'm Abhinav Gupta — a full-stack developer, automation enthusiast, and AI tinkerer. Also known online as <strong>Avinrique</strong>, I blend deep technical skills with hands-on creativity. My core stack includes JavaScript (Node.js), Python, Java, and Bash, and I'm comfortable across both Linux-based systems and cloud platforms like AWS and Azure.
                     </p>
                     <p>
-                        I’ve architected and deployed real-world systems ranging from custom e-commerce platforms and AI-proctored testing tools to ESP32-powered assistant bots and sensor-driven smart displays. I’m constantly exploring the cutting edge — whether it’s fine-tuning LLM prompts, building agentic automation systems, or experimenting with embedded hardware and robotics.
+                        I've architected and deployed real-world systems ranging from custom e-commerce platforms and AI-proctored testing tools to ESP32-powered assistant bots and sensor-driven smart displays. I'm constantly exploring the cutting edge — whether it's fine-tuning LLM prompts, building agentic automation systems, or experimenting with embedded hardware and robotics.
                     </p>
                     <p>
-                        My work is driven by curiosity, a hacker mindset, and a strong belief in building things that work — not just on paper, but in the real world. I don’t just code; I ship.
+                        My work is driven by curiosity, a hacker mindset, and a strong belief in building things that work — not just on paper, but in the real world. I don't just code; I ship.
                     </p>
-                    <div class="stats">
+                    <div class="stats" id="about-stats">
                         <div class="stat-item">
                             <div class="stat-number">3+</div>
                             <div class="stat-title">Years of Experience</div>
@@ -132,7 +132,7 @@
         <div class="container">
             <h2 class="section-title">Technical Skills</h2>
             <div class="skills-content">
-                <div class="skills-grid">
+                <div class="skills-grid" id="skills-grid">
                     <div class="skill-category">
                         <h3><i class="fas fa-code"></i> Web Development</h3>
                         <div class="skill-list">
@@ -215,10 +215,10 @@
     <section class="section" id="projects">
         <div class="container">
             <h2 class="section-title">Featured Projects</h2>
-            <div class="projects-grid">
+            <div class="projects-grid" id="projects-grid">
                 <!-- Project 1 -->
                 <div class="project-card">
-                    <img src="assets/images/prep.png" alt="Project 1" class="project-image">
+                    <img src="assets/images/prep.png" alt="Prepzer0" class="project-image">
                     <div class="project-content">
                         <h3 class="project-title">Prepzer0 – AI-Proctored Testing Platform</h3>
                         <p class="project-description">
@@ -231,17 +231,17 @@
                             <span class="project-tag">Azure</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
+                            <a href="https://github.com/avinrique" target="_blank" class="project-link"><i class="fab fa-github"></i> Code</a>
+                            <a href="https://github.com/avinrique" target="_blank" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
                         </div>
                     </div>
                 </div>
     
                 <!-- Project 2 -->
                 <div class="project-card">
-                    <img src="assets/images/bot.png" alt="Project 2" class="project-image">
+                    <img src="assets/images/bot.png" alt="AI Companion Bot" class="project-image">
                     <div class="project-content">
-                        <h3 class="project-title"> Modular AI Automated Companion Bot</h3>
+                        <h3 class="project-title">Modular AI Automated Companion Bot</h3>
                         <p class="project-description">
                             A portable, animated assistant bot using ESP32, servos, OLED, and LLMs to talk, emote, and answer queries in real-time.
                         </p>
@@ -252,13 +252,13 @@
                             <span class="project-tag">LLM</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
+                            <a href="https://github.com/avinrique" target="_blank" class="project-link"><i class="fab fa-github"></i> Code</a>
+                            <a href="https://github.com/avinrique" target="_blank" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
                         </div>
                     </div>
                 </div>
                 <div class="project-card">
-                    <img src="assets/images/sat.jpg" alt="Project 4" class="project-image">
+                    <img src="assets/images/sat.jpg" alt="Satellite Simulation" class="project-image">
                     <div class="project-content">
                         <h3 class="project-title">Satellite Simulation with Arduino & NRF</h3>
                         <p class="project-description">
@@ -271,14 +271,14 @@
                             <span class="project-tag">Web UI</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
+                            <a href="https://github.com/avinrique" target="_blank" class="project-link"><i class="fab fa-github"></i> Code</a>
+                            <a href="https://github.com/avinrique" target="_blank" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
                         </div>
                     </div>
                 </div>
                 <!-- Project 3 -->
                 <div class="project-card">
-                    <img src="/api/placeholder/400/200" alt="Project 3" class="project-image">
+                    <img src="assets/images/linux-os.png" alt="AI-Driven Linux OS" class="project-image">
                     <div class="project-content">
                         <h3 class="project-title">AI-Driven Lightweight Linux OS</h3>
                         <p class="project-description">
@@ -292,8 +292,8 @@
                             <span class="project-tag">Automation</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
+                            <a href="https://github.com/avinrique" target="_blank" class="project-link"><i class="fab fa-github"></i> Code</a>
+                            <a href="https://github.com/avinrique" target="_blank" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
                         </div>
                     </div>
                 </div>
@@ -305,7 +305,7 @@
     
                 <!-- Project 5 -->
                 <div class="project-card">
-                    <img src="assets/images/aigleair.jpeg" alt="Project 5" class="project-image">
+                    <img src="assets/images/aigleair.jpeg" alt="Aigle Air" class="project-image">
                     <div class="project-content">
                         <h3 class="project-title">Aigle Air – Smart Environment Monitor</h3>
                         <p class="project-description">
@@ -318,29 +318,31 @@
                             <span class="project-tag">OLED Display</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
+                            <a href="https://github.com/avinrique" target="_blank" class="project-link"><i class="fab fa-github"></i> Code</a>
+                            <a href="https://github.com/avinrique" target="_blank" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
                         </div>
                     </div>
                 </div>
     
                 <!-- Project 6 -->
                 <div class="project-card">
-                    <img src="/api/placeholder/400/200" alt="Project 6" class="project-image">
+                    <div class="project-preview-iframe">
+                        <iframe src="https://www.campusoption.com" title="CampusOption Preview" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
+                    </div>
                     <div class="project-content">
-                        <h3 class="project-title">CustomisedPhoneCase – E-Commerce Platform</h3>
+                        <h3 class="project-title">CampusOption – Educational Discovery Platform</h3>
                         <p class="project-description">
-                            A shopping site with cookie-based cart, QR-code payment, wishlist support, and admin order management without login.
+                            A comprehensive platform helping students discover colleges, universities, courses, and admissions across India with real-time exam updates and institutional data.
                         </p>
                         <div class="project-tags">
-                            <span class="project-tag">nodejs</span>
-                            <span class="project-tag">Express.js</span>
-                            <span class="project-tag">MongoDB</span>
-                          
+                            <span class="project-tag">JavaScript</span>
+                            <span class="project-tag">PHP</span>
+                            <span class="project-tag">SEO</span>
+                            <span class="project-tag">Analytics</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
-                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
+                            <a href="https://github.com/avinrique" target="_blank" class="project-link"><i class="fab fa-github"></i> Code</a>
+                            <a href="https://www.campusoption.com" target="_blank" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
                         </div>
                     </div>
                 </div>
@@ -354,7 +356,7 @@
         <div class="container">
             <h2 class="section-title">Get In Touch</h2>
             <div class="contact-content">
-                <div class="contact-info">
+                <div class="contact-info" id="contact-info">
                     <div class="contact-item">
                         <div class="contact-icon">
                             <i class="fas fa-envelope"></i>
@@ -402,7 +404,7 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <form action="mailto:avigupta2001ad@gmail.com" method="post" enctype="text/plain">
+                    <form id="contact-form" action="mailto:avigupta2001ad@gmail.com" method="post" enctype="text/plain">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Your Name">
                         </div>
@@ -427,14 +429,8 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="social-links">
-                <a href="https://github.com/avinrique" target="_blank" class="social-link"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/avingupta01/" target="_blank" class="social-link"><i class="fab fa-linkedin"></i></a>
-                <a href="https://twitter.com/avinrique" target="_blank" class="social-link"><i class="fab fa-twitter"></i></a>
-                <a href="https://www.instagram.com/avinrique/" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
-                <!-- <a href="#" class="social-link"><i class="fab fa-youtube"></i></a> -->
-            </div>
-            <p class="footer-text">&copy; 2025 Avinav Gupta. All rights reserved.</p>
+            <div class="social-links" id="footer-social"></div>
+            <p class="footer-text" id="footer-text">&copy; 2025 Avinav Gupta. All rights reserved.</p>
         </div>
     </footer>
     <div id="avin-terminal-component">
@@ -443,7 +439,7 @@
             <div class="avin-terminal-header" id="avin-terminal-header">
                 <div class="avin-terminal-title">
                     <i class="fas fa-terminal"></i>
-                    <span>terminal@avinrique : konsole — Konsole</span>
+                    <span id="terminal-title">terminal@avinrique : konsole — Konsole</span>
                 </div>
                 <div class="avin-terminal-controls">
                     <div class="avin-terminal-control avin-terminal-minimize" id="avin-terminal-minimize">
@@ -479,6 +475,91 @@
         <i class="fas fa-terminal"></i>
     </div>
 
+   <script>
+   // Load portfolio data synchronously so it's available before app.js runs
+   (function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', './portfolio.json', false); // synchronous
+     try {
+       xhr.send();
+       if (xhr.status === 200) {
+         window.portfolioData = JSON.parse(xhr.responseText);
+       }
+     } catch(e) {
+       console.error('Failed to load portfolio.json:', e);
+     }
+   })();
+   </script>
+   <script>
+   // Populate HTML page from portfolio data once DOM is ready
+   document.addEventListener('DOMContentLoaded', function() {
+     var data = window.portfolioData;
+     if (!data) return;
+
+     // Page title
+     document.getElementById('page-title').textContent = data.name + ' | Portfolio';
+
+     // Nav
+     document.getElementById('nav-alias').textContent = data.alias;
+
+     // Hero
+     document.getElementById('hero-name').textContent = data.name;
+     document.getElementById('hero-tagline').textContent = data.tagline;
+
+     // About
+     var avatar = document.getElementById('about-avatar');
+     avatar.src = data.avatarUrl;
+     avatar.alt = data.name;
+
+     var aboutText = document.getElementById('about-text');
+     aboutText.innerHTML = data.aboutParagraphs.map(function(p) { return '<p>' + p + '</p>'; }).join('') +
+       '<div class="stats" id="about-stats">' +
+       data.stats.map(function(s) { return '<div class="stat-item"><div class="stat-number">' + s.number + '</div><div class="stat-title">' + s.title + '</div></div>'; }).join('') +
+       '</div>';
+
+     // Skills grid
+     var skillsGrid = document.getElementById('skills-grid');
+     skillsGrid.innerHTML = data.skillCategories.map(function(cat) {
+       return '<div class="skill-category"><h3><i class="' + cat.icon + '"></i> ' + cat.title + '</h3><div class="skill-list">' +
+         cat.tags.map(function(t) { return '<span class="skill-tag">' + t + '</span>'; }).join('') +
+         '</div></div>';
+     }).join('');
+
+     // Project cards
+     var projectsGrid = document.getElementById('projects-grid');
+     projectsGrid.innerHTML = data.projectCards.map(function(p) {
+       return '<div class="project-card"><img src="' + p.image + '" alt="' + p.title + '" class="project-image"><div class="project-content"><h3 class="project-title">' + p.title + '</h3><p class="project-description">' + p.description + '</p><div class="project-tags">' +
+         p.tags.map(function(t) { return '<span class="project-tag">' + t + '</span>'; }).join('') +
+         '</div><div class="project-links"><a href="' + p.codeUrl + '" class="project-link"><i class="fab fa-github"></i> Code</a><a href="' + p.demoUrl + '" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a></div></div></div>';
+     }).join('');
+
+     // Contact info
+     var contactInfo = document.getElementById('contact-info');
+     contactInfo.innerHTML =
+       '<div class="contact-item"><div class="contact-icon"><i class="fas fa-envelope"></i></div><div class="contact-text"><h4>Email</h4><a href="mailto:' + data.contact.email + '">' + data.contact.email + '</a></div></div>' +
+       '<div class="contact-item"><div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div><div class="contact-text"><h4>Location</h4><p>' + data.contact.location + '</p></div></div>' +
+       '<div class="contact-item"><div class="contact-icon"><i class="fab fa-github"></i></div><div class="contact-text"><h4>GitHub</h4><a href="' + data.contact.github.url + '" target="_blank">' + data.contact.github.label + '</a></div></div>' +
+       '<div class="contact-item"><div class="contact-icon"><i class="fab fa-linkedin"></i></div><div class="contact-text"><h4>LinkedIn</h4><a href="' + data.contact.linkedin.url + '" target="_blank">' + data.contact.linkedin.label + '</a></div></div>' +
+       '<div class="contact-item"><div class="contact-icon"><i class="fab fa-instagram"></i></div><div class="contact-text"><h4>Instagram</h4><a href="' + data.contact.instagram.url + '" target="_blank">' + data.contact.instagram.label + '</a></div></div>';
+
+     // Contact form mailto
+     document.getElementById('contact-form').action = 'mailto:' + data.contact.email;
+
+     // Footer social links
+     var footerSocial = document.getElementById('footer-social');
+     footerSocial.innerHTML =
+       '<a href="' + data.socialLinks.github + '" target="_blank" class="social-link"><i class="fab fa-github"></i></a>' +
+       '<a href="' + data.socialLinks.linkedin + '" target="_blank" class="social-link"><i class="fab fa-linkedin"></i></a>' +
+       '<a href="' + data.socialLinks.twitter + '" target="_blank" class="social-link"><i class="fab fa-twitter"></i></a>' +
+       '<a href="' + data.socialLinks.instagram + '" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>';
+
+     // Footer text
+     document.getElementById('footer-text').innerHTML = '&copy; ' + data.footerYear + ' ' + data.name + '. All rights reserved.';
+
+     // Terminal title
+     document.getElementById('terminal-title').textContent = 'terminal@' + data.alias.toLowerCase() + ' : konsole — Konsole';
+   });
+   </script>
    <script src="js/app.js"></script>
 </body>
 </html>

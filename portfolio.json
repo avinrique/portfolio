@@ -1,0 +1,93 @@
+{
+  "name": "John Doe",
+  "username": "johndoe",
+  "hostname": "devterminal",
+  "alias": "CodeNinja",
+  "tagline": "Full-Stack Developer | AI Enthusiast",
+  "avatarUrl": "https://i.pravatar.cc/300",
+  "resumeFile": "John_Doe_Resume.pdf",
+  "welcomeMessage": "Welcome to DevTerm v1.0.0! Type \"help\" to start.",
+  "footerYear": 2026,
+  "about": "Hi, I'm John Doe — a passionate full-stack developer and tech enthusiast.",
+  "aboutParagraphs": [
+    "I'm John Doe, a developer who loves building web apps and automation tools.",
+    "I work with JavaScript, Python, and cloud technologies.",
+    "I enjoy learning AI, cybersecurity, and building real-world projects."
+  ],
+  "stats": [
+    {
+      "number": "2+",
+      "title": "Years of Experience"
+    },
+    {
+      "number": "10+",
+      "title": "Projects Built"
+    },
+    {
+      "number": "15+",
+      "title": "Technologies Used"
+    }
+  ],
+  "contact": {
+    "email": "johndoe@example.com",
+    "phone": "+91 90000 00000",
+    "location": "India",
+    "linkedin": {
+      "url": "https://linkedin.com/in/johndoe",
+      "label": "linkedin.com/in/johndoe"
+    },
+    "github": {
+      "url": "https://github.com/johndoe",
+      "label": "github.com/johndoe"
+    },
+    "instagram": {
+      "url": "https://instagram.com/johndoe",
+      "label": "@johndoe"
+    },
+    "twitter": {
+      "url": "https://twitter.com/johndoe",
+      "label": "@johndoe"
+    }
+  },
+  "skills": {
+    "Languages": "JavaScript, Python, Java, C++",
+    "Frontend": "React, HTML, CSS, Tailwind",
+    "Backend": "Node.js, Express, MongoDB",
+    "DevOps": "Docker, Git, AWS",
+    "AI": "Machine Learning, LLM APIs",
+    "Other": "REST APIs, Linux"
+  },
+  "projects": {
+    "project1": {
+      "name": "Task Manager App",
+      "description": "A simple task management web app",
+      "tech": "React, Node.js, MongoDB",
+      "features": [
+        "CRUD tasks",
+        "User authentication",
+        "Responsive UI"
+      ],
+      "demo": "https://demo.example.com",
+      "github": "https://github.com/johndoe/task-manager"
+    },
+    "project2": {
+      "name": "AI Chatbot",
+      "description": "A chatbot using OpenAI API",
+      "tech": "Python, Flask, OpenAI API",
+      "features": [
+        "Chat UI",
+        "API integration"
+      ],
+      "demo": "N/A",
+      "github": "https://github.com/johndoe/ai-chatbot"
+    }
+  },
+  "socialLinks": {
+    "github": "https://github.com/johndoe",
+    "linkedin": "https://linkedin.com/in/johndoe",
+    "twitter": "https://twitter.com/johndoe",
+    "instagram": "https://instagram.com/johndoe"
+  },
+  "githubProfileUrl": "https://github.com/johndoe",
+  "certifications": "docs/certifications.json"
+}

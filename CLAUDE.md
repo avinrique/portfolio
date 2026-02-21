@@ -4,167 +4,88 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a single-page interactive portfolio website for Avinav Gupta, built entirely with vanilla HTML, CSS, and JavaScript. The portfolio features a custom terminal emulator as the primary interface, offering 40+ interactive commands for users to explore the developer's skills, projects, and information.
-
-## Architecture
-
-**Modular Structure**: The application uses a clean separation of concerns:
-- `index.html` (24KB): Semantic HTML structure with portfolio content, navigation, and terminal interface
-- `js/app.js` (77KB): Complete JavaScript logic including AvinTerm terminal emulator class, command system, camera integration, and API interactions
-- `css/app.css` (extensive): Complete styling with CSS variables, glassmorphism effects, responsive design, terminal UI, and animations
-
-**Core Components**:
-- **AvinTerm Class** (`js/app.js`): Object-oriented terminal emulator with configurable options, virtual file system, and command processing
-- **Command System**: Modular command handlers for portfolio navigation, system info, camera functions, and utilities
-- **Virtual File System**: In-memory file system with portfolio data stored as files (`README.md`, `about.txt`, `projects.json`, etc.)
-- **Responsive Design**: Mobile-first approach with specific breakpoints for different device sizes
-- **API Integrations**: Weather data (OpenWeatherMap), camera access, geolocation, battery status, NewsAPI for real-time news
+Single-page interactive portfolio website built with vanilla HTML, CSS, and JavaScript. The primary interface is a custom terminal emulator (AvinTerm) with 60+ interactive commands. No frameworks, no build step, no tests, no linting.
 
 ## Development Commands
 
-**Local Development**:
 ```bash
-# Serve the portfolio locally using Python
+# Serve locally (required for portfolio.json fetch to work)
 python3 -m http.server 8000
 
-# Alternative with Node.js (if http-server is installed)
-npx http-server . -p 8000
-
-# Or simply open index.html directly in a browser
+# Or open directly (some features like portfolio.json loading may not work via file://)
 open index.html
 ```
 
-**Available Tools**:
-- Python 3.12.0 (available for local server)
-- Node.js v24.2.0 (available for tooling)
+## Architecture
 
-## Terminal Commands
+Three files contain essentially all the code:
 
-The portfolio includes 50+ interactive terminal commands organized into categories:
+- **`index.html`** — HTML structure, portfolio data loader script (synchronous XHR fetches `portfolio.json` into `window.portfolioData`), and DOM population logic
+- **`js/app.js`** (~3700 lines) — The `AvinTerm` class, command handlers, utility functions, Three.js earth/asteroid effects
+- **`css/app.css`** — All styling: CSS variables for theming, glassmorphism effects, responsive breakpoints (479px, 768px, 1024px, 1441px, 1921px)
 
-**Core Commands**: `help`, `clear`, `echo`, `cat`, `ls`, `exit`, `version`
-**Portfolio Commands**: `about`, `skills`, `experience`, `contact`, `resume`
-**Project Commands**: `projects`, `project [name]`, `github`, `demo [name]`, `code [name]`
-**Camera Commands**: `takepic`, `takepic_rear`, `showpics`, `showpic [id]`, `delpic [id]`, `clearpics`, `camera_info`
-**System Commands**: `sysinfo`, `device`, `time`, `date`
-**News Commands**: `news [category]` - Real-time news from multiple sources
-
-**Command Aliases**: 
-- Common Unix aliases: `ll` → `ls`, `dir` → `ls`, `cls` → `clear`, `whoami` → `about`
-- Developer shortcuts: `man` → `help`, `vim` → helpful message, `sudo` → humorous response
-- Navigation: `pwd`, `cd`, `mkdir` → contextual responses
-
-**Easter Egg Commands**: 🥚
-- `matrix` - Matrix rain effect with green digital rain
-- `hacker` - Animated hacking sequence with terminal output
-- `dance` - Rainbow background animation with dancing emojis  
-- `rocket` - Animated rocket launch across the screen
-- `coffee` - ASCII art coffee cup with brewing animation
-- `unicorn` - Magical unicorn ASCII art with sparkles
-- `pizza` - Pizza delivery joke with cryptocurrency payment
-- `fortune` - Random programming/developer fortune cookies
-- `konami` - Classic cheat code reference
-- `secret` - Hidden achievement for explorers
-- `moon` - Makes the 3D moon perform an elegant, smooth revolution around Earth
-- `destroy` - 💀 EPIC destruction sequence: asteroid attack, broken TV effects, KABOOM explosion, and webpage reconstruction screen
-
-**Certification Commands**:
-- `certs` - Display all certifications and courses
-- `achievements` - Show competition wins and awards
-- `courses` - List completed courses
-- `cert [number]` - Show detailed certificate information
-- `viewcert [number]` - Display certificate image in terminal
-
-**Discovery Commands**:
-- `commands` - Show ALL available commands (comprehensive list)
-- `hints` - Tips for discovering easter eggs and hidden features
-- `aliases` - Show command shortcuts and alternative names
-- `explore` - Get suggestions for fun commands to try
-
-**Utility Commands**: `weather [city]`, `sum [numbers]`, `hello`
-
-## Key Features
-
-**Terminal Emulator**:
-- Custom-built with command history and autocomplete
-- Responsive design adapting to different screen sizes
-- Persistent command history across sessions
-- Support for complex commands with parameters
-
-**Camera Integration**:
-- Front and rear camera access via WebRTC
-- Photo capture and local storage management
-- Gallery functionality with view/delete operations
-
-**System Information**:
-- Comprehensive device and browser diagnostics
-- Battery status, network info, and performance metrics
-- Real-time data updates
-
-**Responsive Design**:
-- Mobile-first approach with touch-friendly terminal
-- Breakpoints: 479px, 768px, 1024px, 1441px, 1921px
-- Adaptive command output for different screen sizes
-
-## File Structure
+### Data Flow
 
 ```
-portfolio/
-├── index.html              # Main HTML file with portfolio content
-├── css/
-│   └── app.css            # Complete styling with glassmorphism effects
-├── js/
-│   └── app.js             # AvinTerm terminal emulator and JavaScript logic
-├── assets/
-│   ├── Abhinav_Gupta_Resume.pdf  # Resume file
-│   └── images/
-│       ├── aigleair.jpeg  # Project images
-│       ├── bot.png
-│       ├── image.jpg
-│       ├── prep.png
-│       └── sat.jpg
-├── docs/
-│   └── README.md          # Project documentation
-└── CLAUDE.md              # Development documentation
+portfolio.json ──(sync XHR in index.html)──> window.portfolioData
+    │
+    ├──> index.html DOMContentLoaded handler populates all HTML sections
+    │
+    └──> AvinTerm constructor reads window.portfolioData to build:
+         ├── virtualFileSystem (README.md, about.txt, contact.txt, etc.)
+         └── command output (about, skills, experience, contact, projects)
 ```
 
-## Development Notes
+### AvinTerm Command System (`js/app.js`)
 
-**Technology Stack**:
-- Pure vanilla JavaScript (ES6+) - no frameworks or libraries
-- CSS3 with modern features (Grid, Flexbox, CSS Variables, Backdrop Filter)
-- HTML5 with semantic markup
-- Font Awesome for icons
-- Google Fonts for typography
+Commands are split across two mechanisms:
 
-**API Dependencies**:
-- OpenWeatherMap API for weather data (requires API key configuration)
-- Hacker News API for tech news and RSS2JSON for other categories (no API key required)
-- Browser APIs: Camera, Geolocation, Battery, Device Orientation
+1. **Built-in commands** — Hardcoded in the `processCommand()` switch statement (~line 454). Handles: `clear`, `echo`, `cat`, `ls`, `help`, `exit`, `version`, `about`, `skills`, `experience`, `contact`, `resume`, `projects`, `project`, `github`, `demo`, `code`.
 
-**Browser Compatibility**:
-- Modern browsers with WebRTC support required for camera features
-- CSS backdrop-filter support needed for glassmorphism effects
-- ES6+ JavaScript features used throughout
+2. **Custom commands** — Defined in the `customCommands` object (~line 1883), passed to the AvinTerm constructor via `commands` option. Handles: camera, system info, weather, news, certifications, easter eggs, destructive animations, and discovery commands.
 
-## API Configuration
+**Command resolution order**: aliases map → custom commands → built-in switch → "command not found"
 
-**News Integration**:
-- Tech news: Hacker News API + Dev.to API (no authentication required)
-- World/Business/Science: Reddit API (no authentication required) 
-- Sports/Health/Entertainment: Curated static content with real-time formatting
-- No setup needed - works out of the box
+**To add a new command:**
+- Add the handler function to the `customCommands` object (before the `new AvinTerm()` call at ~line 3217)
+- Add the command name to `this.availableCommands` array in `initializeCommands()` (~line 806) for tab completion
+- Handlers receive `(args, fullCmd)` and return a string (HTML), a Promise, or null
 
-**OpenWeatherMap Setup**: Requires API key for weather command functionality
+### Key Globals
+
+- `window.portfolioData` — All portfolio content from `portfolio.json`
+- `window.terminal` — The AvinTerm instance (created at ~line 3217)
+- `window.terminalImageStorage` — Array of captured camera photos
+- `window.earth3D` — Three.js earth scene reference
+
+### Utility Functions (outside AvinTerm class)
+
+- `showNotification()` / `shouldShowNotification()` — Toast notifications with localStorage throttling
+- `createAsteroidAttack()` — Three.js asteroid animation sequence
+- `startBrokenTVEffect()` — Visual glitch effect
+- `fetchTechNews()` / `fetchAlternativeTechNews()` — Hacker News + RSS2JSON fallback
+
+## Data-Driven Content
+
+**`portfolio.json`** (root) — All portfolio content. To customize for a different person, edit this single file:
+- Personal info: `name`, `alias`, `tagline`, `avatarUrl`, `resumeFile`
+- About: `about` (short), `aboutParagraphs` (array), `stats` (array of `{number, title}`)
+- Contact: `email`, `phone`, `location`, social links (each with `url` and `label`)
+- Skills: `skills` object (terminal display) and `skillCategories` array (HTML page grid)
+- Projects: keyed `projects` object (terminal commands) and `projectCards` array (HTML cards, each with `image`, `title`, `description`, `tags`, `codeUrl`, `demoUrl`)
+- Terminal config: `username`, `hostname`, `welcomeMessage`
+
+**`docs/achievements.json`** — Certifications, competitions, and courses. Referenced by the `certs`/`achievements` terminal commands.
 
 ## Customization
 
-**Adding New Commands**: Extend the command system by adding handlers in `js/app.js`
-**Styling Changes**: Modify CSS variables in the `:root` selector in `css/app.css` for theme customization
-**Content Updates**: Update portfolio data within the JavaScript command handlers in `js/app.js`
-**Image Assets**: Add new images to `assets/images/` and update references in HTML
-**Responsive Breakpoints**: Adjust media queries in `css/app.css` for different device targeting
+- **Theme**: Modify CSS variables in `:root` selector in `css/app.css`
+- **New commands**: Add to `customCommands` object + `availableCommands` array in `js/app.js`
+- **Content**: Edit `portfolio.json` — no need to touch JS or HTML
+- **Images**: Add to `assets/images/` and reference in `portfolio.json` projectCards
 
-## Security Considerations
+## External Dependencies
 
-The application uses browser APIs that require user permissions (camera, location). All data is stored locally in the browser's localStorage. No external authentication or server-side data storage is implemented.
+Loaded via CDN in `index.html` (no npm/package.json):
+- Font Awesome 6.4.0 (icons)
+- Three.js r128 (3D earth globe in hero section)

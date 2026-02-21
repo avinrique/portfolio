@@ -18,67 +18,24 @@
                 
                 // Add minimize state tracking
                 this.isMinimized = false;
+                const pd = window.portfolioData || {};
+                const c = pd.contact || {};
                 this.virtualFileSystem = {
     'README.md': 'Welcome to AvinTerm! This terminal showcases my portfolio and projects.\n\nQuick Start:\n- Type "help" for basic commands\n- Type "commands" to see ALL available commands\n- Type "hints" for easter egg discovery tips\n- Type "explore" for command suggestions\n\n🎪 Hidden surprises await exploration!',
-    
-    'about.txt': 'Hi, I\'m Abhinav Gupta — a full-stack developer and automation enthusiast currently pursuing Information Science and Engineering at BMSIT, Bangalore. I specialize in AI, automation, microcontroller-based systems, cybersecurity, and large language models. I love building projects that integrate hardware and software in smart, useful ways.',
 
-    'contact.txt': 'Email: avigupta2001ad@gmail.com\nPhone: +91 84341 06606\nLocation: Biratnagar, Nepal / Bangalore, India\nLinkedIn: linkedin.com/in/avinrique\nGitHub: github.com/avinrique',
+    'about.txt': pd.about || '',
+
+    'contact.txt': 'Email: ' + (c.email || '') + '\nPhone: ' + (c.phone || '') + '\nLocation: ' + (c.location || '') + '\nLinkedIn: ' + ((c.linkedin && c.linkedin.label) || '') + '\nGitHub: ' + ((c.github && c.github.label) || ''),
 
     'projects.json': JSON.stringify({
-        "projects": [
-            {
-                "name": "Prepzer0",
-                "tech": "MERN Stack, AI, Proctoring, Face/Phone Detection",
-                "description": "AI-proctored placement testing platform with secure exams and cheating detection."
-            },
-            {
-                "name": "Talking Bot Assistant",
-                "tech": "ESP32, Servos, OLED, Python, LLMs, TTS/STT",
-                "description": "Portable assistant bot with facial expression and natural language communication."
-            },
-            {
-                "name": "Aigle Air",
-                "tech": "ESP32, DFRobot Sensors, CO2/O2/PM, OLED, Ads Display",
-                "description": "A smart air-quality sensing device inspired by Liquid 3, integrated with an ad display."
-            },
-            {
-                "name": "CustomisedPhoneCase",
-                "tech": "JavaScript, MongoDB, Node.js, QR Payment, Admin Dashboard",
-                "description": "E-commerce platform for phone cases, supports cart, wishlist, QR-based checkout."
-            },
-            {
-                "name": "AI-Driven Linux OS",
-                "tech": "Debian, Python, Shell Scripts, GenAI, Automation",
-                "description": "A lightweight, custom OS to automate tasks via natural language and multi-display extensions."
-            },
-            {
-                "name": "AutoCISGuard",
-                "tech": "Electron, PowerShell, Bash, Python",
-                "description": "Automated CIS benchmark auditing tool for Linux and Windows with GUI reports."
-            },
-            {
-                "name": "Spacedesk-like Display App",
-                "tech": "Linux, Networking, Python, Shell, GUI",
-                "description": "Linux app to extend displays across devices wirelessly, inspired by Spacedesk."
-            },
-            {
-                "name": "Satellite Project",
-                "tech": "Arduino, NRF, Sensors, Web UI",
-                "description": "Real-time sensor data transmission from satellite to ground with a supporting web dashboard."
-            }
-        ]
+        "projects": Object.values(pd.projects || {}).map(p => ({
+            name: p.name,
+            tech: p.tech,
+            description: p.description
+        }))
     }, null, 2),
 
-    'skills.txt': 
-`- Languages: Java, JavaScript, Python, Shell
-- Frontend: React, TailwindCSS, HTML/CSS
-- Backend: Node.js, Express, MongoDB
-- DevOps: AWS, Azure, Docker, CI/CD
-- OS & Tools: Linux, Electron.js, ngrok, VSCode
-- Automation: Selenium, AI task delegation, Prompt engineering
-- Microcontrollers: ESP32, Raspberry Pi, ATtiny85, Arduino
-- AI: LLM integration (Gemini, GPT), TTS/STT, chatbot interfaces`,
+    'skills.txt': Object.entries(pd.skills || {}).map(([k, v]) => '- ' + k + ': ' + v).join('\n'),
 
     'notes.txt': `AvinTerm v1.0.0
 Welcome to my digital workspace.
@@ -550,90 +507,76 @@ processCommand(cmd) {
     output.className = 'avin-terminal-line avin-terminal-info';
     output.innerHTML = `<div class="portfolio-section">
         <h3>About Me</h3>
-        <p>Hi, I'm Abhinav Gupta — a full-stack developer and builder passionate about automation, AI, and robotics. 
-        I'm currently pursuing Information Science and Engineering at BMSIT, Bangalore. 
-        My projects combine hardware and software in creative ways, from natural language OS control to interactive talking bots.</p>
+        <p>${(window.portfolioData && window.portfolioData.about) || ''}</p>
     </div>`;
     break;
 
 case 'skills':
     output.className = 'avin-terminal-line avin-terminal-info';
-    output.innerHTML = `<div class="portfolio-section">
+    {
+        const sk = (window.portfolioData && window.portfolioData.skills) || {};
+        output.innerHTML = `<div class="portfolio-section">
         <h3>Technical Skills</h3>
         <ul>
-            <li><strong>Languages:</strong> JavaScript, Python, Shell, Java, C++</li>
-            <li><strong>Frontend:</strong> React, Tailwind, HTML/CSS, Vue.js</li>
-            <li><strong>Backend:</strong> Node.js, Express, Django, MongoDB</li>
-            <li><strong>DevOps:</strong> Docker, AWS, Azure, CI/CD, Git</li>
-            <li><strong>Automation & AI:</strong> GenAI, Prompt Engineering, LLMs (Gemini, GPT), Selenium</li>
-            <li><strong>Microcontrollers:</strong> ESP32, Raspberry Pi, ATtiny85, Arduino</li>
-            <li><strong>Other:</strong> REST APIs, Electron.js, WebSockets, ngrok</li>
+            ${Object.entries(sk).map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`).join('')}
         </ul>
     </div>`;
+    }
     break;
 
 case 'experience':
     output.className = 'avin-terminal-line avin-terminal-info';
-    output.innerHTML = `<div class="portfolio-section">
+    {
+        const exp = (window.portfolioData && window.portfolioData.experience) || [];
+        output.innerHTML = `<div class="portfolio-section">
         <h3>Work & Project Experience</h3>
-        <div class="experience-item">
-            <p><strong>Prepzer0</strong> – AI-proctored placement testing platform</p>
-            <p>Built from scratch with MERN stack; detects cheating using face & phone detection</p>
-        </div>
-        <div class="experience-item">
-            <p><strong>AI Linux OS (WIP)</strong> – Lightweight Debian-based OS</p>
-            <p>Built using debootstrap + chroot to automate everyday tasks with natural language prompts</p>
-        </div>
-        <div class="experience-item">
-            <p><strong>Bot Project</strong> – Talking & animated assistant</p>
-            <p>ESP32-based human assistant using TTS, STT, OLED face, and servos with emotional interaction</p>
-        </div>
-        <div class="experience-item">
-            <p><strong>Aigle Air</strong> – Liquid 3-inspired smart air monitor</p>
-            <p>DFRobot CO2/O2/PM sensors with ad display integration</p>
-        </div>
-        <div class="experience-item">
-            <p><strong>CustomisedPhoneCase</strong> – Client e-commerce site</p>
-            <p>Includes cart, wishlist, QR payments, and admin dashboard</p>
-        </div>
+        ${exp.map(e => `<div class="experience-item">
+            <p><strong>${e.title}</strong> – ${e.subtitle}</p>
+            <p>${e.description}</p>
+        </div>`).join('')}
     </div>`;
+    }
     break;
 
 case 'contact':
     output.className = 'avin-terminal-line avin-terminal-info';
-    output.innerHTML = `<div class="portfolio-section">
+    {
+        const ct = (window.portfolioData && window.portfolioData.contact) || {};
+        output.innerHTML = `<div class="portfolio-section">
         <h3>Contact Information</h3>
-        <p><strong>Email:</strong> avigupta2001ad@gmail.com</p>
-        <p><strong>LinkedIn:</strong> linkedin.com/in/avinrique</p>
-        <p><strong>GitHub:</strong> github.com/avinrique</p>
-        <p><strong>Phone:</strong> +91 84341 06606</p>
-        <p><strong>Location:</strong> Biratnagar, Nepal / Bangalore, India</p>
+        <p><strong>Email:</strong> ${ct.email || ''}</p>
+        <p><strong>LinkedIn:</strong> ${(ct.linkedin && ct.linkedin.label) || ''}</p>
+        <p><strong>GitHub:</strong> ${(ct.github && ct.github.label) || ''}</p>
+        <p><strong>Phone:</strong> ${ct.phone || ''}</p>
+        <p><strong>Location:</strong> ${ct.location || ''}</p>
     </div>`;
+    }
     break;
 
     case 'resume':
     output.className = 'avin-terminal-line avin-terminal-success';
-    output.innerHTML = `<div class="portfolio-section">
+    {
+        const rf = (window.portfolioData && window.portfolioData.resumeFile) || 'resume.pdf';
+        output.innerHTML = `<div class="portfolio-section">
         <h3>Resume</h3>
         <p>Generating downloadable resume...</p>
-        <p><a href="Abhinav_Gupta_Resume.pdf" download="Abhinav_Gupta_Resume.pdf">Click here to download PDF version</a></p>
+        <p><a href="${rf}" download="${rf}">Click here to download PDF version</a></p>
     </div>`;
+    }
     break;
             // Project Commands
             case 'projects':
     output.className = 'avin-terminal-line avin-terminal-info';
-    output.innerHTML = `<div class="portfolio-section">
+    {
+        const projs = (window.portfolioData && window.portfolioData.projects) || {};
+        output.innerHTML = `<div class="portfolio-section">
         <h3>My Projects</h3>
         <ul>
-            <li><strong>Prepzer0</strong> – AI-proctored placement testing platform</li>
-            <li><strong>AI Linux OS</strong> – Lightweight Debian-based GenAI OS</li>
-            <li><strong>Bot Project</strong> – ESP32-based animated assistant bot</li>
-            <li><strong>Aigle Air</strong> – Smart bio-sensor air monitoring system</li>
-            <li><strong>CustomisedPhoneCase</strong> – E-commerce platform for personalized phone cases</li>
-            <li><strong>Mad Application</strong> – SpaceDesk-like Linux display extension tool</li>
+            ${Object.entries(projs).map(([key, p]) => `<li><strong>${p.name}</strong> – ${p.description}</li>`).join('')}
         </ul>
         <p>Use <code>project [name]</code> for more details about a specific project</p>
     </div>`;
+    }
     break;
 
     case 'project':
@@ -642,86 +585,7 @@ case 'contact':
         output.innerHTML = 'Usage: project [project_name]';
     } else {
         const projectName = args[0].toLowerCase();
-        const projects = {
-            'prepzer0': {
-                name: 'Prepzer0',
-                description: 'AI-powered placement test platform with cheating detection',
-                tech: 'MERN Stack, Python, OpenCV',
-                features: [
-                    'AI-based proctoring (face & phone detection)',
-                    'MCQ/Programming test support',
-                    'Admin analytics dashboard',
-                    'Live camera stream monitoring'
-                ],
-                demo: 'https://prepzer0.abhinav.live',
-                github: 'https://github.com/avinrique/prepzer0'
-            },
-            'linuxos': {
-                name: 'AI Linux OS',
-                description: 'Debian-based lightweight OS with natural language control',
-                tech: 'Debootstrap, Python, Shell, GenAI',
-                features: [
-                    'Execute tasks via natural language',
-                    'Automation shell using LLMs',
-                    'Built-in apps: file manager, AI assistant',
-                    'Spacedesk-like display extension'
-                ],
-                demo: 'N/A',
-                github: 'https://github.com/avinrique/ai-linux-os'
-            },
-            'bot': {
-                name: 'Bot Project',
-                description: 'ESP32-powered talking bot with emotions and OLED face',
-                tech: 'ESP32, Python, Servos, OLED, Google TTS/STT',
-                features: [
-                    'Voice interaction & expressions',
-                    'Animated face on OLED',
-                    'ESP32-driven servo head',
-                    'Human-size kiosk version for public use'
-                ],
-                demo: 'https://youtu.be/demo-bot-video',
-                github: 'https://github.com/avinrique/talking-esp32-bot'
-            },
-            'aigleair': {
-                name: 'Aigle Air',
-                description: 'Smart air monitoring system with DFRobot sensors and ad display',
-                tech: 'ESP32, DFRobot CO2/O2 sensors, Python, OLED',
-                features: [
-                    'Air quality monitoring (CO2, O2, PM)',
-                    'Advertisement display',
-                    'Mobile dashboard UI',
-                    'Smart notification system'
-                ],
-                demo: 'https://aigleair.abhinav.live',
-                github: 'https://github.com/avinrique/aigle-air'
-            },
-            'phonecase': {
-                name: 'CustomisedPhoneCase',
-                description: 'E-commerce platform for personalized phone case orders',
-                tech: 'HTML, CSS, JS, PHP, MySQL',
-                features: [
-                    'Cart & Wishlist without login',
-                    'QR code payments',
-                    'Admin panel for orders',
-                    'Image-based order system'
-                ],
-                demo: 'https://customcase.abhinav.live',
-                github: 'https://github.com/avinrique/customised-phone-case'
-            },
-            'madapp': {
-                name: 'adllinux Application',
-                description: 'Linux app for extending/mirroring displays across devices (like SpaceDesk)',
-                tech: 'Shell, Python, TCP Sockets, Electron',
-                features: [
-                    'Mirror or extend Linux desktop wirelessly',
-                    'No external hardware required',
-                    'Custom display resolution support',
-                    'Cross-device compatibility'
-                ],
-                demo: 'N/A',
-                github: 'https://github.com/avinrique/madapp'
-            }
-        };
+        const projects = (window.portfolioData && window.portfolioData.projects) || {};
 
                     const project = projects[projectName];
                     if (project) {
@@ -745,8 +609,11 @@ case 'contact':
                 break;
             case 'github':
                 output.className = 'avin-terminal-line avin-terminal-success';
-                output.innerHTML = `Opening GitHub profile: <a href="https://github.com/avinrique" target="_blank">https://github.com/avinrique</a>`;
-                window.open('https://github.com/avinrique', '_blank');
+                {
+                    const ghUrl = (window.portfolioData && window.portfolioData.githubProfileUrl) || '#';
+                    output.innerHTML = `Opening GitHub profile: <a href="${ghUrl}" target="_blank">${ghUrl}</a>`;
+                    window.open(ghUrl, '_blank');
+                }
                 break;
                 case 'demo':
     if (args.length === 0) {
@@ -754,17 +621,13 @@ case 'contact':
         output.innerHTML = 'Usage: demo [project_name]';
     } else {
         const projectName = args[0].toLowerCase();
-        const demos = {
-            'prepzer0': 'https://prepzer0.abhinav.live',
-            'aigleair': 'https://aigleair.abhinav.live',
-            'phonecase': 'https://customcase.abhinav.live',
-            'bot': 'https://youtu.be/demo-bot-video' // Replace with real link if different
-        };
+        const projs = (window.portfolioData && window.portfolioData.projects) || {};
+        const demoUrl = projs[projectName] && projs[projectName].demo;
 
-        if (demos[projectName]) {
+        if (demoUrl && demoUrl !== 'N/A') {
             output.className = 'avin-terminal-line avin-terminal-success';
-            output.innerHTML = `Opening demo for ${args[0]}: <a href="${demos[projectName]}" target="_blank">${demos[projectName]}</a>`;
-            window.open(demos[projectName], '_blank');
+            output.innerHTML = `Opening demo for ${args[0]}: <a href="${demoUrl}" target="_blank">${demoUrl}</a>`;
+            window.open(demoUrl, '_blank');
         } else {
             output.className = 'avin-terminal-line avin-terminal-error';
             output.innerHTML = `Demo for '${args[0]}' not found. Use 'projects' to see available projects.`;
@@ -778,19 +641,13 @@ case 'contact':
         output.innerHTML = 'Usage: code [project_name]';
     } else {
         const projectName = args[0].toLowerCase();
-        const repos = {
-            'prepzer0': 'https://github.com/avinrique/prepzer0',
-            'linuxos': 'https://github.com/avinrique/ai-linux-os',
-            'bot': 'https://github.com/avinrique/talking-esp32-bot',
-            'aigleair': 'https://github.com/avinrique/aigle-air',
-            'phonecase': 'https://github.com/avinrique/customised-phone-case',
-            'adlinuxapp': 'https://github.com/avinrique/madapp'
-        };
+        const projs = (window.portfolioData && window.portfolioData.projects) || {};
+        const repoUrl = projs[projectName] && projs[projectName].github;
 
-        if (repos[projectName]) {
+        if (repoUrl) {
             output.className = 'avin-terminal-line avin-terminal-success';
-            output.innerHTML = `Opening source code for ${args[0]}: <a href="${repos[projectName]}" target="_blank">${repos[projectName]}</a>`;
-            window.open(repos[projectName], '_blank');
+            output.innerHTML = `Opening source code for ${args[0]}: <a href="${repoUrl}" target="_blank">${repoUrl}</a>`;
+            window.open(repoUrl, '_blank');
         } else {
             output.className = 'avin-terminal-line avin-terminal-error';
             output.innerHTML = `Repository for '${args[0]}' not found. Use 'projects' to see available projects.`;
@@ -3358,10 +3215,11 @@ function startBrokenTVEffect() {
     }, 2000);
 }
             // Initialize terminal
+            const pd = window.portfolioData || {};
             window.terminal = new AvinTerm({
-                username: 'user',
-                hostname: 'avinterm',
-                welcomeMessage: 'Welcome to AvinTerm v1.0.0! Type "help" to start or "commands" to explore more.',
+                username: pd.username || 'user',
+                hostname: pd.hostname || 'avinterm',
+                welcomeMessage: pd.welcomeMessage || 'Welcome to AvinTerm v1.0.0! Type "help" to start or "commands" to explore more.',
                 showOnLoad: false,
                 commands: customCommands
             });
