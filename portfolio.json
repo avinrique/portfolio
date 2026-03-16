@@ -1,93 +1,281 @@
 {
-  "name": "John Doe",
-  "username": "johndoe",
-  "hostname": "devterminal",
-  "alias": "CodeNinja",
-  "tagline": "Full-Stack Developer | AI Enthusiast",
-  "avatarUrl": "https://i.pravatar.cc/300",
-  "resumeFile": "John_Doe_Resume.pdf",
-  "welcomeMessage": "Welcome to DevTerm v1.0.0! Type \"help\" to start.",
+  "name": "Avinav Gupta",
+  "username": "avinrique",
+  "hostname": "avinterm",
+  "alias": "Avinrique",
+  "tagline": "Full-Stack Developer | AI Specialist | Cybersecurity Enthusiast",
+  "avatarUrl": "https://avatars.githubusercontent.com/u/67151782?v=4",
+  "resumeFile": "Abhinav_Gupta_Resume.pdf",
+  "welcomeMessage": "Welcome to AvinPortfolio v1.0.0! Type \"help\" to start.",
   "footerYear": 2026,
-  "about": "Hi, I'm John Doe — a passionate full-stack developer and tech enthusiast.",
+  "about": "Hi, I'm Abhinav Gupta — a full-stack developer, automation enthusiast, and AI tinkerer passionate about building things that work in the real world.",
   "aboutParagraphs": [
-    "I'm John Doe, a developer who loves building web apps and automation tools.",
-    "I work with JavaScript, Python, and cloud technologies.",
-    "I enjoy learning AI, cybersecurity, and building real-world projects."
+    "I'm Abhinav Gupta — a full-stack developer, automation enthusiast, and AI tinkerer. Also known online as <strong>Avinrique</strong>, I blend deep technical skills with hands-on creativity. My core stack includes JavaScript (Node.js), Python, Java, and Bash, and I'm comfortable across both Linux-based systems and cloud platforms like AWS and Azure.",
+    "I've architected and deployed real-world systems ranging from custom e-commerce platforms and AI-proctored testing tools to ESP32-powered assistant bots and sensor-driven smart displays. I'm constantly exploring the cutting edge — whether it's fine-tuning LLM prompts, building agentic automation systems, or experimenting with embedded hardware and robotics.",
+    "My work is driven by curiosity, a hacker mindset, and a strong belief in building things that work — not just on paper, but in the real world. I don't just code; I ship."
   ],
   "stats": [
     {
-      "number": "2+",
+      "number": "3+",
       "title": "Years of Experience"
     },
     {
-      "number": "10+",
+      "number": "25+",
       "title": "Projects Built"
     },
     {
-      "number": "15+",
+      "number": "20+",
       "title": "Technologies Used"
     }
   ],
   "contact": {
-    "email": "johndoe@example.com",
-    "phone": "+91 90000 00000",
-    "location": "India",
+    "email": "avigupta2001ad@gmail.com",
+    "phone": "+91 84341 06606",
+    "location": "Biratnagar, Nepal",
     "linkedin": {
-      "url": "https://linkedin.com/in/johndoe",
-      "label": "linkedin.com/in/johndoe"
+      "url": "https://www.linkedin.com/in/avingupta01/",
+      "label": "linkedin.com/in/avingupta01"
     },
     "github": {
-      "url": "https://github.com/johndoe",
-      "label": "github.com/johndoe"
+      "url": "https://github.com/avinrique",
+      "label": "github.com/avinrique"
     },
     "instagram": {
-      "url": "https://instagram.com/johndoe",
-      "label": "@johndoe"
+      "url": "https://www.instagram.com/avinrique/",
+      "label": "@avinrique"
     },
     "twitter": {
-      "url": "https://twitter.com/johndoe",
-      "label": "@johndoe"
+      "url": "https://x.com/avinrique",
+      "label": "@avinrique"
     }
   },
   "skills": {
-    "Languages": "JavaScript, Python, Java, C++",
-    "Frontend": "React, HTML, CSS, Tailwind",
-    "Backend": "Node.js, Express, MongoDB",
-    "DevOps": "Docker, Git, AWS",
-    "AI": "Machine Learning, LLM APIs",
-    "Other": "REST APIs, Linux"
+    "Languages": "Java, JavaScript, Python, Shell",
+    "Frontend": "React, TailwindCSS, HTML/CSS, Electron",
+    "Backend": "Node.js, Express, MongoDB, PostgreSQL",
+    "DevOps": "AWS, Azure, Docker, CI/CD, Git",
+    "AI": "LLMs (Gemini, GPT), Deep Learning, TensorFlow, PyTorch, TTS/STT",
+    "Cybersecurity": "Penetration Testing, Network Security, Shell Scripting",
+    "Hardware": "ESP32, Raspberry Pi, Arduino, ATtiny85, IoT, Robotics",
+    "Other": "3D Modeling, DevOps, Linux, Automation, Selenium"
   },
-  "projects": {
-    "project1": {
-      "name": "Task Manager App",
-      "description": "A simple task management web app",
-      "tech": "React, Node.js, MongoDB",
-      "features": [
-        "CRUD tasks",
-        "User authentication",
-        "Responsive UI"
-      ],
-      "demo": "https://demo.example.com",
-      "github": "https://github.com/johndoe/task-manager"
+  "skillCategories": [
+    {
+      "icon": "fas fa-code",
+      "title": "Web Development",
+      "tags": ["HTML5", "CSS3", "JavaScript", "Node.js", "Express", "Electron"]
     },
-    "project2": {
-      "name": "AI Chatbot",
-      "description": "A chatbot using OpenAI API",
-      "tech": "Python, Flask, OpenAI API",
+    {
+      "icon": "fas fa-database",
+      "title": "Databases",
+      "tags": ["MongoDB", "PostgreSQL", "Firebase"]
+    },
+    {
+      "icon": "fas fa-laptop-code",
+      "title": "Programming Languages",
+      "tags": ["Python", "Java", "JavaScript", "Shell Scripting"]
+    },
+    {
+      "icon": "fas fa-shield-alt",
+      "title": "Cybersecurity",
+      "tags": ["Penetration Testing", "Network Security", "Shell scripting"]
+    },
+    {
+      "icon": "fas fa-robot",
+      "title": "AI & Automation",
+      "tags": ["LLMs", "Deep Learning", "TensorFlow", "Pytorch", "Automation", "GenAI"]
+    },
+    {
+      "icon": "fas fa-microchip",
+      "title": "Hardware",
+      "tags": ["Microcontrollers", "Raspberry Pi", "Arduino", "Circuit Design", "IoT", "Robotics"]
+    },
+    {
+      "icon": "fas fa-desktop",
+      "title": "Operating Systems",
+      "tags": ["Linux", "Windows", "macOS"]
+    },
+    {
+      "icon": "fas fa-gamepad",
+      "title": "Other Skills",
+      "tags": ["3D Modeling", "DevOps"]
+    }
+  ],
+  "projects": {
+    "prepzer0": {
+      "name": "Prepzer0",
+      "description": "AI-proctored placement testing platform with secure exams and cheating detection",
+      "tech": "MERN Stack, AI, Proctoring, Face/Phone Detection",
       "features": [
-        "Chat UI",
-        "API integration"
+        "AI-based proctoring (face & phone detection)",
+        "MCQ/Programming test support",
+        "Admin analytics dashboard",
+        "Live camera stream monitoring"
+      ],
+      "demo": "https://prepzer0.abhinav.live",
+      "github": "https://github.com/avinrique/prepzer0"
+    },
+    "bot": {
+      "name": "Modular AI Automated Companion Bot",
+      "description": "Portable assistant bot with facial expression and natural language communication",
+      "tech": "ESP32, Servos, OLED, Python, LLMs, TTS/STT",
+      "features": [
+        "Emotional OLED face expressions",
+        "Voice recognition and text-to-speech",
+        "LLM-powered conversational AI",
+        "Servo-driven physical animations"
       ],
       "demo": "N/A",
-      "github": "https://github.com/johndoe/ai-chatbot"
+      "github": "https://github.com/avinrique/talking-esp32-bot"
+    },
+    "aigleair": {
+      "name": "Aigle Air",
+      "description": "A smart air-quality sensing device inspired by Liquid 3, integrated with an ad display",
+      "tech": "ESP32, DFRobot Sensors, CO2/O2/PM, OLED, Ads Display",
+      "features": [
+        "DFRobot CO2/O2/PM2.5 sensors",
+        "Real-time air quality monitoring",
+        "OLED display output",
+        "Ad display integration"
+      ],
+      "demo": "https://aigleair.abhinav.live",
+      "github": "https://github.com/avinrique/aigle-air"
+    },
+    "linuxos": {
+      "name": "AI-Driven Linux OS",
+      "description": "A lightweight, custom OS to automate tasks via natural language and multi-display extensions",
+      "tech": "Debian, Python, Shell Scripts, GenAI, Automation",
+      "features": [
+        "Built using debootstrap + chroot",
+        "Natural language task automation",
+        "Multi-display extension support",
+        "Lightweight Debian-based"
+      ],
+      "demo": "N/A",
+      "github": "https://github.com/avinrique/ai-linux-os"
+    },
+    "satellite": {
+      "name": "Satellite Simulation",
+      "description": "Real-time sensor data transmission from satellite to ground with a supporting web dashboard",
+      "tech": "Arduino, NRF24L01, C++, Web UI",
+      "features": [
+        "NRF24L01 wireless communication",
+        "Environmental sensor data collection",
+        "Ground station mission control UI",
+        "Real-time data visualization"
+      ],
+      "demo": "N/A",
+      "github": "https://github.com/avinrique/satelite"
+    },
+    "campusoption": {
+      "name": "CampusOption",
+      "description": "A comprehensive platform helping students discover colleges, universities, courses, and admissions across India",
+      "tech": "JavaScript, PHP, SEO, Analytics",
+      "features": [
+        "College and course discovery",
+        "Real-time exam updates",
+        "Institutional data aggregation",
+        "SEO-optimized content"
+      ],
+      "demo": "https://www.campusoption.com",
+      "github": "https://github.com/avinrique"
+    },
+    "autocisguard": {
+      "name": "AutoCIS-Guard",
+      "description": "Automated CIS benchmark auditing tool for Linux and Windows with GUI reports",
+      "tech": "Electron, PowerShell, Bash, Python",
+      "features": [
+        "CIS benchmark compliance checking",
+        "Cross-platform (Linux & Windows)",
+        "GUI-based report generation",
+        "Automated security auditing"
+      ],
+      "demo": "N/A",
+      "github": "https://github.com/avinrique/AutoCIS-Guard"
+    },
+    "dineview": {
+      "name": "DineView",
+      "description": "QR-based restaurant ordering SaaS with AR menu previews and kitchen display",
+      "tech": "Next.js, React, TypeScript, PostgreSQL, Redis, Socket.IO, Docker",
+      "features": [
+        "QR-based ordering system",
+        "AR menu previews with Three.js",
+        "Real-time kitchen display",
+        "Admin dashboard"
+      ],
+      "demo": "N/A",
+      "github": "https://github.com/avinrique/dineview"
+    },
+    "whatsappai": {
+      "name": "WhatsApp AI Assistant",
+      "description": "Intelligent WhatsApp assistant that learns communication patterns with auto-reply",
+      "tech": "whatsapp-web.js, OpenAI GPT-4o, LanceDB, Express, Socket.io",
+      "features": [
+        "Communication pattern learning",
+        "Chain-of-thought reply engine",
+        "Style profiling",
+        "Web dashboard"
+      ],
+      "demo": "N/A",
+      "github": "https://github.com/avinrique/whatsappai"
     }
   },
+  "projectCards": [
+    {
+      "image": "assets/images/prep.png",
+      "title": "Prepzer0 – AI-Proctored Testing Platform",
+      "description": "A low-cost online placement testing system with AI-based proctoring (face, phone detection) and an admin dashboard for analytics.",
+      "tags": ["JavaScript", "Node.js", "MongoDB", "Azure"],
+      "codeUrl": "https://github.com/avinrique/prepzer0",
+      "demoUrl": "https://prepzer0.abhinav.live"
+    },
+    {
+      "image": "assets/images/bot.png",
+      "title": "Modular AI Automated Companion Bot",
+      "description": "A portable, animated assistant bot using ESP32, servos, OLED, and LLMs to talk, emote, and answer queries in real-time.",
+      "tags": ["ESP32", "Python", "TTS/STT", "LLM"],
+      "codeUrl": "https://github.com/avinrique/talking-esp32-bot",
+      "demoUrl": "https://github.com/avinrique/talking-esp32-bot"
+    },
+    {
+      "image": "assets/images/sat.jpg",
+      "title": "Satellite Simulation with Arduino & NRF",
+      "description": "A space-themed Arduino project transmitting environmental sensor data to a ground station, complete with a mission control UI.",
+      "tags": ["Arduino", "NRF24L01", "C++", "Web UI"],
+      "codeUrl": "https://github.com/avinrique/satelite",
+      "demoUrl": "https://github.com/avinrique/satelite"
+    },
+    {
+      "image": "assets/images/linux-os.png",
+      "title": "AI-Driven Lightweight Linux OS",
+      "description": "A lightweight, Linux-based OS designed to automate tasks and streamline workflow with AI-based natural language control and display extension features.",
+      "tags": ["Debian", "GenAI", "Shell Script", "Python", "Automation"],
+      "codeUrl": "https://github.com/avinrique/ai-linux-os",
+      "demoUrl": "https://github.com/avinrique/ai-linux-os"
+    },
+    {
+      "image": "assets/images/aigleair.jpeg",
+      "title": "Aigle Air – Smart Environment Monitor",
+      "description": "A Liquid-3-inspired system using DFRobot sensors (CO2, PM2.5, O2) with display + ad modules to raise awareness on air quality.",
+      "tags": ["ESP32", "DFRobot", "Sensors", "OLED Display"],
+      "codeUrl": "https://github.com/avinrique/aigle-air",
+      "demoUrl": "https://aigleair.abhinav.live"
+    },
+    {
+      "image": "assets/images/image.jpg",
+      "title": "CampusOption – Educational Discovery Platform",
+      "description": "A comprehensive platform helping students discover colleges, universities, courses, and admissions across India with real-time exam updates and institutional data.",
+      "tags": ["JavaScript", "PHP", "SEO", "Analytics"],
+      "codeUrl": "https://github.com/avinrique",
+      "demoUrl": "https://www.campusoption.com"
+    }
+  ],
   "socialLinks": {
-    "github": "https://github.com/johndoe",
-    "linkedin": "https://linkedin.com/in/johndoe",
-    "twitter": "https://twitter.com/johndoe",
-    "instagram": "https://instagram.com/johndoe"
+    "github": "https://github.com/avinrique",
+    "linkedin": "https://www.linkedin.com/in/avingupta01/",
+    "twitter": "https://x.com/avinrique",
+    "instagram": "https://www.instagram.com/avinrique/"
   },
-  "githubProfileUrl": "https://github.com/johndoe",
-  "certifications": "docs/certifications.json"
+  "githubProfileUrl": "https://github.com/avinrique",
+  "certifications": "docs/achievements.json"
 }
