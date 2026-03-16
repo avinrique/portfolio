@@ -262,7 +262,7 @@
       "demoUrl": "https://aigleair.abhinav.live"
     },
     {
-      "image": "assets/images/image.jpg",
+      "image": "https://www.campusoption.com/favicon.ico",
       "title": "CampusOption – Educational Discovery Platform",
       "description": "A comprehensive platform helping students discover colleges, universities, courses, and admissions across India with real-time exam updates and institutional data.",
       "tags": ["JavaScript", "PHP", "SEO", "Analytics"],
