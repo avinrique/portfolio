@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Avinav Gupta (Avinrique) — Full-Stack Developer, AI Specialist & Cybersecurity Enthusiast. Explore my projects, skills, and interactive terminal portfolio.">
+    <meta name="author" content="Avinav Gupta">
+    <meta name="keywords" content="Avinav Gupta, Avinrique, portfolio, full-stack developer, AI, cybersecurity, ESP32, robotics">
+    <meta property="og:title" content="Avinav Gupta | Portfolio">
+    <meta property="og:description" content="Full-Stack Developer | AI Specialist | Cybersecurity Enthusiast — Interactive terminal portfolio with 60+ commands.">
+    <meta property="og:image" content="https://avatars.githubusercontent.com/u/67151782?v=4">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@avinrique">
     <title id="page-title">Avinav Gupta | Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/app.css">
@@ -27,10 +36,10 @@
     <div class="terminal">
         <div class="terminal-line" style="top: 10%; left: 5%;">$ sudo apt-get update</div>
         <div class="terminal-line" style="top: 25%; left: 30%;">import tensorflow as tf</div>
-        <div class="terminal-line" style="top: 40%; left: 15%;">`for i in range(02,1453)</div>
+        <div class="terminal-line" style="top: 40%; left: 15%;">for i in range(02,1453)</div>
         <div class="terminal-line" style="top: 55%; left: 25%;">$ chmod 755 deploy.sh</div>
         <div class="terminal-line" style="top: 70%; left: 10%;">while True: data = sensor.read()</div>
-        <div class="terminal-line" style="top: 85%; left: 40%;">await fetch('https://api.example.com/data')</div>v 
+        <div class="terminal-line" style="top: 85%; left: 40%;">await fetch('https://api.example.com/data')</div>
     </div>
 
 
@@ -80,6 +89,9 @@
                     <a href="#contact" class="btn btn-outline">
                         <i class="fas fa-envelope"></i> Contact Me
                     </a>
+                    <a href="Abhinav_Gupta_Resume.pdf" download class="btn btn-outline" id="hero-resume-btn">
+                        <i class="fas fa-download"></i> Resume
+                    </a>
                 </div>
             </div>
         </div>
@@ -90,7 +102,7 @@
     </section>
 
     <!-- About Section -->
-    <section class="section" id="about">
+    <section class="section scroll-reveal" id="about">
         <div class="container">
             <h2 class="section-title">About Me</h2>
             <div class="about-content">
@@ -128,7 +140,7 @@
     
 
     <!-- Skills Section -->
-    <section class="section" id="skills">
+    <section class="section scroll-reveal" id="skills">
         <div class="container">
             <h2 class="section-title">Technical Skills</h2>
             <div class="skills-content">
@@ -212,7 +224,7 @@
     </section>
 
     <!-- Projects Section -->
-    <section class="section" id="projects">
+    <section class="section scroll-reveal" id="projects">
         <div class="container">
             <h2 class="section-title">Featured Projects</h2>
             <div class="projects-grid" id="projects-grid">
@@ -352,7 +364,7 @@
     
 
     <!-- Contact Section -->
-    <section class="section" id="contact">
+    <section class="section scroll-reveal" id="contact">
         <div class="container">
             <h2 class="section-title">Get In Touch</h2>
             <div class="contact-content">
@@ -558,7 +570,128 @@
 
      // Terminal title
      document.getElementById('terminal-title').textContent = 'terminal@' + data.alias.toLowerCase() + ' : konsole — Konsole';
+
+     // Resume button
+     var resumeBtn = document.getElementById('hero-resume-btn');
+     if (resumeBtn && data.resumeFile) {
+       resumeBtn.href = data.resumeFile;
+       resumeBtn.setAttribute('download', data.resumeFile);
+     }
    });
+   </script>
+   <script>
+   // === Scroll Reveal Animation ===
+   (function() {
+     var observer = new IntersectionObserver(function(entries) {
+       entries.forEach(function(entry) {
+         if (entry.isIntersecting) {
+           entry.target.classList.add('revealed');
+           // Stagger skill tags
+           var tags = entry.target.querySelectorAll('.skill-tag, .project-card, .stat-item, .contact-item');
+           tags.forEach(function(el, i) {
+             el.style.transitionDelay = (i * 0.05) + 's';
+             el.classList.add('stagger-in');
+           });
+         }
+       });
+     }, { threshold: 0.1 });
+
+     document.addEventListener('DOMContentLoaded', function() {
+       document.querySelectorAll('.scroll-reveal').forEach(function(el) {
+         observer.observe(el);
+       });
+     });
+   })();
+
+   // === Typing Effect for Hero Tagline ===
+   (function() {
+     document.addEventListener('DOMContentLoaded', function() {
+       var el = document.getElementById('hero-tagline');
+       if (!el) return;
+       var phrases = [
+         'Full-Stack Developer',
+         'AI Specialist',
+         'Cybersecurity Enthusiast',
+         'Hardware Tinkerer',
+         'Automation Builder'
+       ];
+       var phraseIndex = 0, charIndex = 0, isDeleting = false;
+       var typeSpeed = 80, deleteSpeed = 40, pauseTime = 1800;
+
+       function type() {
+         var current = phrases[phraseIndex];
+         if (isDeleting) {
+           el.textContent = current.substring(0, charIndex--);
+           if (charIndex < 0) {
+             isDeleting = false;
+             phraseIndex = (phraseIndex + 1) % phrases.length;
+             setTimeout(type, 400);
+             return;
+           }
+           setTimeout(type, deleteSpeed);
+         } else {
+           el.textContent = current.substring(0, charIndex++);
+           if (charIndex > current.length) {
+             isDeleting = true;
+             setTimeout(type, pauseTime);
+             return;
+           }
+           setTimeout(type, typeSpeed);
+         }
+       }
+       setTimeout(type, 1000);
+     });
+   })();
+
+   // === Active Nav Link on Scroll ===
+   (function() {
+     document.addEventListener('DOMContentLoaded', function() {
+       var sections = document.querySelectorAll('section[id]');
+       var navLinks = document.querySelectorAll('.nav-links a');
+
+       window.addEventListener('scroll', function() {
+         var scrollY = window.pageYOffset;
+         sections.forEach(function(sec) {
+           var top = sec.offsetTop - 100;
+           var height = sec.offsetHeight;
+           var id = sec.getAttribute('id');
+           if (scrollY >= top && scrollY < top + height) {
+             navLinks.forEach(function(link) {
+               link.classList.remove('active-nav');
+               if (link.getAttribute('href') === '#' + id) {
+                 link.classList.add('active-nav');
+               }
+             });
+           }
+         });
+       });
+
+       // Mobile menu: close on link click
+       navLinks.forEach(function(link) {
+         link.addEventListener('click', function() {
+           var menu = document.getElementById('nav-links');
+           var toggle = document.getElementById('menu-toggle');
+           if (menu) menu.classList.remove('active');
+           if (toggle) toggle.classList.remove('active');
+         });
+       });
+     });
+   })();
+
+   // === Smooth Scroll for Nav Links ===
+   (function() {
+     document.addEventListener('DOMContentLoaded', function() {
+       document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+         link.addEventListener('click', function(e) {
+           var target = document.querySelector(this.getAttribute('href'));
+           if (target) {
+             e.preventDefault();
+             target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+           }
+         });
+       });
+     });
+   })();
    </script>
    <script src="js/app.js"></script>
 </body>
